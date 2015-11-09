@@ -639,8 +639,12 @@ public final class MessageBroker {
      * @param callerClass
      */
     private boolean checkPermissions( Object callerClass, Object resource, String mbMethod ){
-        return mResourceLocator.lookupService(PrivacyService.class)
-                .checkPermissions(callerClass, resource, mbMethod );
+        PrivacyService privacyService = mResourceLocator.lookupService(PrivacyService.class);
+        if( privacyService == null ){
+            return true;
+        }else {
+            return privacyService.checkPermissions(callerClass, resource, mbMethod);
+        }
     }
 
 

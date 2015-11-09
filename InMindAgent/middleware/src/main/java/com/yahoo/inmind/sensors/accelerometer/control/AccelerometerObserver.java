@@ -23,8 +23,8 @@ public class AccelerometerObserver extends SensorObserver {
 
     public AccelerometerObserver(Handler handler, Context context) {
         super(handler, context);
-        mUri = Accelerometer_Provider.Accelerometer_Data.CONTENT_URI;
         this.actions.add(Accelerometer.ACTION_AWARE_ACCELEROMETER);
+        mUri = Accelerometer_Provider.Accelerometer_Data.CONTENT_URI;
         name = Aware_Preferences.STATUS_ACCELEROMETER;
     }
 

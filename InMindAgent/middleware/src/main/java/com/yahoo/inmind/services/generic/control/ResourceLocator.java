@@ -9,6 +9,7 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.yahoo.inmind.comm.generic.control.MessageBroker;
 import com.yahoo.inmind.commons.control.Constants;
@@ -160,15 +161,16 @@ public class ResourceLocator {
      * We add all the Middleware services here.
      */
     public void addServices(){
+        Log.d("ResourceLocator", "addServices");
         mServicesHash.put( PrivacyService.class, new MiddServiceConnection() );
         mServicesHash.put( NewsService.class, new MiddServiceConnection() );
         mServicesHash.put( AwareServiceWrapper.class, new MiddServiceConnection() );
-        mServicesHash.put( ActivityRecognitionService.class, new MiddServiceConnection() );
-        mServicesHash.put( HotelReservationService.class, new MiddServiceConnection() );
-        mServicesHash.put( LocationService.class, new MiddServiceConnection() );
-        mServicesHash.put( WeatherService.class, new MiddServiceConnection());
-        //mServicesHash.put( CalendarService.class, new MiddServiceConnection());
-        //mServicesHash.put( StreamingService.class, new MiddServiceConnection());
+//        mServicesHash.put( ActivityRecognitionService.class, new MiddServiceConnection() );
+//        mServicesHash.put( HotelReservationService.class, new MiddServiceConnection() );
+//        mServicesHash.put( LocationService.class, new MiddServiceConnection() );
+//        mServicesHash.put( WeatherService.class, new MiddServiceConnection());
+//        mServicesHash.put( CalendarService.class, new MiddServiceConnection());
+//        mServicesHash.put( StreamingService.class, new MiddServiceConnection());
 
         // add your service here:
 

@@ -31,23 +31,23 @@ public class NewsCommunicator
             {
                 MessageBroker.set(MBRequest.build(Constants.SET_NEWS_LIST_SIZE, 40));
                 MBRequest request = MBRequest.build(Constants.MSG_LAUNCH_BASE_NEWS_ACTIVITY);
-                //messageBroker.send(request);//TODO: fix!
+                messageBroker.send("NewsCommunicator", request);//TODO: fix!
 
             }
             else if (args.equalsIgnoreCase("next"))
             {
                 MBRequest request = MBRequest.build(Constants.MSG_SHOW_NEXT_NEWS_ARTICLE);
-                //messageBroker.send(request);
+                messageBroker.send("NewsCommunicator", request);
             }
             else if (args.equalsIgnoreCase("previous"))
             {
                     MBRequest request = MBRequest.build(Constants.MSG_SHOW_PREVIOUS_NEWS_ARTICLE);
-                    //messageBroker.send(request);
+                    messageBroker.send("NewsCommunicator", request);
             }
             else if (args.equalsIgnoreCase("expand"))
             {
                 MBRequest request = MBRequest.build(Constants.MSG_EXPAND_NEWS_ARTICLE);
-                //messageBroker.send(request);
+                messageBroker.send("NewsCommunicator", request);
             }
             else if (args.equalsIgnoreCase("read"))
             {

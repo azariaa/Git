@@ -26,6 +26,7 @@ public class AwareServiceWrapper extends GenericService {
         super(null);
         Intent awareIntent = new Intent(mContext, Aware.class);
         mContext.startService(awareIntent);
+
         if( actions.isEmpty() ) {
             this.actions.add(Locations.ACTION_AWARE_LOCATIONS);
             this.actions.add(Battery.ACTION_AWARE_BATTERY_CHARGING);
@@ -105,10 +106,19 @@ public class AwareServiceWrapper extends GenericService {
     }
 
 
+    public static void startSensor( Context context, String sensor ) {
+        Aware.startSensor( context, sensor );
+    }
+
+    public static void stopSensor(Context context, String sensor ) {
+        Aware.stopSensor( context, sensor );
+    }
+
+
     public void onEvent( BatterySensorEvent event){
         if(event.getAction().equals(Battery.ACTION_AWARE_BATTERY_CHARGING)
                 || event.getAction().equals(Battery.ACTION_AWARE_BATTERY_CHARGING_AC)
-                || event.getAction().equals(Battery.ACTION_AWARE_BATTERY_CHARGING_USB)){
+                || event.getAction().equals(Battery.ACTION_AWARE_BATTERY_CHARGING_USB)) {
             Log.e("battery", "Charging");
             AwareServiceWrapper.setSetting(mContext, LocationSettings.ACCURACY_GOOGLE_FUSED_LOCATION, LocationRequest.PRIORITY_HIGH_ACCURACY);
 //            mContext.sendBroadcast(new Intent(Aware.ACTION_AWARE_REFRESH));

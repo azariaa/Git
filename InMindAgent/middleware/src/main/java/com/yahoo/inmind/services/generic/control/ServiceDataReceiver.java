@@ -15,12 +15,12 @@ public class ServiceDataReceiver extends BroadcastReceiver {
         mContext = context;
     }
 
-    public ServiceDataReceiver() {
-        Log.e("", "INSIDE ServiceDataReceiver");
-    }
+    public ServiceDataReceiver() {}
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.e("", "Inside ServiceDataReceiver.onReceive");
+        Log.d("", "Inside ServiceDataReceiver.onReceive");
+        Log.d("", "Context: " + context);
+        Log.d("", "Intent: " + intent.getAction());
     }
 }

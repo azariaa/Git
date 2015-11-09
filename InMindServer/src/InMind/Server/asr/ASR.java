@@ -74,6 +74,8 @@ public class ASR
 
     public void sendData(byte[] dataToSend, int length) throws IOException
     {
+        if (wr == null)
+            beginTransmission();
         wr.write(dataToSend, 0, length);
         wr.flush();
     }

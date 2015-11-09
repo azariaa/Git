@@ -65,10 +65,12 @@ public abstract class SensorObserver extends ContentObserver{
 
     public void startListening(){
         AwareServiceWrapper.setSetting(mContext, name, true);
+        AwareServiceWrapper.startSensor(mContext, name);
     }
 
     public void stopListening(){
         AwareServiceWrapper.setSetting(mContext, name, false);
+        AwareServiceWrapper.stopSensor(mContext, name);
     }
 
     public ArrayList<String> getActions() {

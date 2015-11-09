@@ -50,18 +50,11 @@ public class AccelerometerProposition extends PropositionalStatement {
 
 
     private void startAccelerometer(){
-        mb.send(AccelerometerProposition.this,
-                MBRequest.build(Constants.MSG_SENSOR_SETTINGS)
-                .put(Constants.SENSOR_NAME, Constants.SENSOR_ACCELEROMETER)
-                .put(Constants.SENSOR_SETTING, Constants.SENSOR_START)
-                .put(Constants.ACCELEROMETER_FREQUENCY, 200000L )); //in microseconds
+        ResourceLocator.getExistingInstance().lookupSensor(AccelerometerObserver.class).startListening();
     }
 
     private void stopAccelerometer(){
-        mb.send(AccelerometerProposition.this,
-                MBRequest.build(Constants.MSG_SENSOR_SETTINGS)
-                .put(Constants.SENSOR_NAME, Constants.SENSOR_ACCELEROMETER)
-                .put(Constants.SENSOR_SETTING, Constants.SENSOR_STOP));
+        ResourceLocator.getExistingInstance().lookupSensor(AccelerometerObserver.class).stopListening();
     }
 
     @Override

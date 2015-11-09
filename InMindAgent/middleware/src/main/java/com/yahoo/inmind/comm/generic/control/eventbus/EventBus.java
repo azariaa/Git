@@ -434,7 +434,7 @@ public class EventBus {
         }
         if (!subscriptionFound) {
             if (logNoSubscriberMessages) {
-                Log.d(TAG, "No subscribers registered for event " + eventClass);
+                //Log.d(TAG, "No subscribers registered for event " + eventClass);
             }
             if (sendNoSubscriberEvent && eventClass != NoSubscriberEvent.class &&
                     eventClass != SubscriberExceptionEvent.class) {
@@ -452,7 +452,7 @@ public class EventBus {
         if (subscriptions != null && !subscriptions.isEmpty()) {
             for (Subscription subscription : subscriptions) {
                 if( resourceLocator.lookupService(PrivacyService.class).checkPermissions(
-                        subscription.getClass(), event.getClass().getCanonicalName(), "post") ) {
+                        subscription.subscriber, event, "post") ) {
                     postingState.event = event;
                     postingState.subscription = subscription;
                     boolean aborted = false;
