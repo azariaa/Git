@@ -75,12 +75,14 @@ public class TCPServer extends Thread
                 try
                 {
                     message = in.readLine();
+                    if (message == null) //EOS (End Of Stream)
+                        running = false;
                 }
                 catch (Exception ignored) //probably timeout exception, which is ok.
                 {
                 }
 
-                if (message != null && messageListener != null)
+                if (running && message != null && messageListener != null)
                 {
                     //call the method messageReceived from ServerBoard class
                     messageListener.messageReceived(message);

@@ -17,7 +17,7 @@ public class InteractionManager extends AInteractionManager
     //final double dActionThreshold = 300;
     //final double dListenThreshold = 1000;
     final double dStopSpeakingThreshold = 250;//150;
-    final double dMinVadDuration = 300;
+    final double dMinVadDuration = 200;
     final double dMinAdditionalVad = 100;
 
     enum InternalState {init, waitForASR, complete};
