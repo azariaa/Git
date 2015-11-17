@@ -17,7 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
@@ -33,7 +33,7 @@ import android.widget.Toast;
 /**
  * Created by Amos Azaria on 31-Dec-14.
  */
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends AppCompatActivity
 {
 
     TTScontroller ttsCont;
@@ -55,6 +55,10 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("Main", "onCreate");
+
+
+        // Initializing the Message Broker
+        MessageBroker.getInstance( this );
 
 
         userNotifierHandler = new Handler(new Handler.Callback()
@@ -194,16 +198,6 @@ public class MainActivity extends ActionBarActivity
             ttsCont = new TTScontroller(this, ttsCompleteHandler);
         }
 
-        MessageBroker messageBroker = null;
-        try
-        {
-            messageBroker = MessageBroker.getInstance(this);
-        }
-        catch (Exception ex)
-        {
-            Log.e("Middleware", "Exception getting MW instance: " + ex.getMessage());
-        }
-
         if (logicController == null)
         {
             final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
@@ -213,7 +207,7 @@ public class MainActivity extends ActionBarActivity
             if (uniqueId == null)
                 uniqueId = "errorId";
             logicController = new LogicController(userNotifierHandler, talkHandler,
-                    launchHandler, startStopRecNotifier, messageBroker, uniqueId);
+                    launchHandler, startStopRecNotifier, uniqueId);
         }
 
         if (inmindCommandListener == null)
@@ -411,4 +405,9 @@ public class MainActivity extends ActionBarActivity
 
     };
 
+
+    @Override
+    public void onDestroy(){
+        MessageBroker.getInstance( this ).destroy();
+    }
 }

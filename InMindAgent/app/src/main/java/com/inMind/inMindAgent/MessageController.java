@@ -15,20 +15,21 @@ import InMind.Consts;
 public class MessageController
 {
     static Integer currentRuleId = 0;
-    public static void dealWithMessage(String command, String args, MessageBroker messageBroker, Handler talkHandler)
+    static Class className = MessageController.class;
+
+    public static void dealWithMessage(String command, String args, Handler talkHandler)
     {
-        //call middleware;
         if (command.equalsIgnoreCase(Consts.news))
         {
-            NewsCommunicator.dealWithMessage(args, messageBroker, talkHandler);
+            NewsCommunicator.dealWithMessage(args, talkHandler);
         }
         else if (command.equalsIgnoreCase(Consts.execJson))
         {
             Log.d("dealWithMessage", "json, executing rule with middleware. args:" + args);
-            messageBroker.send("MessageController",
+            MessageBroker.getExistingInstance(className).send(className,
                     MBRequest.build(Constants.MSG_CREATE_DECISION_RULE)
                             .put(Constants.DECISION_RULE_JSON, args)
-                            .put(Constants.DECISION_RULE_ID, currentRuleId.toString() ));
+                            .put(Constants.DECISION_RULE_ID, currentRuleId.toString()));
             currentRuleId++;
         }
     }

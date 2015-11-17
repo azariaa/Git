@@ -36,7 +36,7 @@ public class crowdRule
         public String content;
     }
 
-    static final String ip = "45.55.172.104"; //localhost //"45.55.172.104";
+    static final String ip = "45.55.172.104"; //"localhost" //"45.55.172.104";
     static final int crowdPort = 1606;
     static final int listenPort = 1607;
     static final long maxWaitForCrowd = 10 * 60 * 1000;

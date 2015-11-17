@@ -41,21 +41,20 @@ public class LogicController
 
     private MessageController messageController;
     private Context context = null;
-    MessageBroker messageBroker;
+
 
     interface syncNotifiers
     {
         void startStopRec(boolean start);
     }
 
-    public LogicController(Handler userNotifierHandler, Handler talkHandler, Handler launchHandler, syncNotifiers startStopRecNotifier, MessageBroker messageBroker, String uniqueId)
+    public LogicController(Handler userNotifierHandler, Handler talkHandler, Handler launchHandler, syncNotifiers startStopRecNotifier, String uniqueId)
     {
         this.userNotifierHandler = userNotifierHandler;
         this.talkHandler = talkHandler;
         this.launchHandler = launchHandler;
         this.startStopRecNotifier = startStopRecNotifier;
         messageController = new MessageController();
-        this.messageBroker = messageBroker;
         this.uniqueId = uniqueId;
     }
 
@@ -194,12 +193,12 @@ public class LogicController
                     args = m.group(2);
                 try
                 {
-                    messageController.dealWithMessage(command, args, messageBroker, talkHandler);
+                    messageController.dealWithMessage(command, args, talkHandler);
                 }
                 catch (Exception ex)
                 {
-                    Log.e("messageController.dealWithMessage", "command=" + command + " args=" + args + " " + ex.toString());
-                    //ex.printStackTrace();
+                    //Log.e("messageController.dealWithMessage", "command=" + command + " args=" + args + " " + ex.toString());
+                    ex.printStackTrace();
                 }
             }
         }

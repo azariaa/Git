@@ -5,46 +5,98 @@ android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
-    defaultConfig {
-        minSdkVersion 17
-
-        applicationId "com.inMind.inMindAgent"
-        targetSdkVersion 22
-        manifestPlaceholders - [providerLabel: applicationId]
+    signingConfigs {
+        config {
+            keyAlias 'proof_of_concept'
+            keyPassword 'InMindYahoo2015'
+            storePassword 'InMindYahoo2015'
+            storeFile file('credential.keystore')
+        }
     }
+
+    defaultConfig {
+        applicationId "com.inMind.inMindAgent"
+        minSdkVersion 19
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled = true
+        // we need to define a custom placeholder to avoid content provider conflicts
+        manifestPlaceholders = [providerLabel: applicationId]
+    }
+
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
+
     packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
+
+    repositories {
+        mavenCentral()
+        flatDir {
+            dirs 'libs'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.0'
     compile project(':middleware')
+    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:design:22.2.1'
 
-//    // libs required by the commons project
-//    compile 'uk.com.robust-it:cloning:1.9.1'
-//    compile 'com.google.code.gson:gson:2.3'
-//    compile ('com.googlecode.json-simple:json-simple:1.1.1') {
-//        exclude module: 'junit'
-//    }
-//
-//    // libs required by the news reader project
-//    compile 'de.greenrobot:eventbus:2.4.0'
-//    compile 'commons-codec:commons-codec:1.6'
-//    compile 'org.apache.httpcomponents:httpcore:4.3.2'
-//
-//
-//    // libs required by the middleware project
-//    compile 'com.google.guava:guava:18.0'
+    /** cloning  **/
+    compile 'uk.com.robust-it:cloning:1.+'
+
+    /** json  **/
+    compile 'com.google.code.gson:gson:2.+'
+    compile('com.googlecode.json-simple:json-simple:1.1.1') {
+        exclude module: 'junit'
+    }
+
+    /** http  **/
+    compile 'com.loopj.android:android-async-http:1.4.5'
+    compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
+    compile('org.apache.httpcomponents:httpmime:4.3.5') {
+        exclude module: 'org.apache.httpcomponents:httpclient'
+    }
+    compile 'com.goebl:david-webb:1.1.0'
+
+    /** google API's  **/
+    compile 'com.google.api-client:google-api-client-android:1.20.0'
+    compile 'com.google.api-client:google-api-client-gson:1.20.0'
+    compile 'com.google.apis:google-api-services-calendar:v3-rev125-1.20.0'
+    compile 'com.google.android.gms:play-services-location:8.3.0'
+    compile 'com.google.android.gms:play-services-wearable:8.3.0'
+    compile 'com.google.android.gms:play-services-vision:8.3.0'
+
+    /** support  **/
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:cardview-v7:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:design:22.2.0'
+    compile 'com.android.support:multidex:1.0.0'
+
+    /** Caching, collections, Crypto, concurrency, I/O  **/
+    compile 'com.mcxiaoke.volley:library:1.0.+' //ImageLoader
+    compile 'commons-codec:commons-codec:1.6' //Crypto
+    compile 'org.apache.commons:commons-lang3:3.0' //StringUtils
 }
