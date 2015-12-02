@@ -6,6 +6,6 @@ pattern,classAndFileBaseName
 knock knock,knockKnock
 Hello,firstHello
 start rapport,rapport
-(create|compose)( a)? rule,crowdRule
+(.*crowd.*help.*)|(.*help.*crowd.*)|((create|compose)( a)? (rule|room)),crowdRule
 .*,socialTalk
 .*,toInstructable
