@@ -20,6 +20,7 @@ public class Consts
     static public final String connectUdp = "ConnectUDP";
     static public final String stopUdp = "StopUDP";
     static public final String sayCommand = "Say";
+    static public final String userSaid = "userSaid";
     static public final String launchCommand = "Launch";
     static public final String execJson = "execJson";
     static public final String startNewConnection = "StartNewConnection";

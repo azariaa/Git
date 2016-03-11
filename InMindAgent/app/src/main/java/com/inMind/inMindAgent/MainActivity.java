@@ -1,5 +1,6 @@
 package com.inMind.inMindAgent;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.inMind.inMindAgent.InMindCommandListener.InmindCommandInterface;
@@ -11,6 +12,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -24,10 +26,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 /**
@@ -42,6 +46,10 @@ public class MainActivity extends AppCompatActivity
 
     private ImageButton startButton, startFromCircle;
     private Button stopButton;
+    private ListView chatView;
+    ArrayList<String> chatArray = new ArrayList<>();
+    //ArrayAdapter<String> chatAdapter;
+    ListViewCustomAdapter<String> chatAdapter;
 
     private Handler userNotifierHandler, talkHandler, launchHandler, ttsCompleteHandler; // TODO: should
     // these all be
@@ -113,9 +121,18 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean handleMessage(Message msg)
             {
+
                 String toSay = msg.obj.toString();
-                ttsCont.speakThis(toSay);
-                if (msg.arg1 == 1) //toast
+                //chatView.setTextColor(Color.RED);
+                chatArray.add(((msg.arg2 == 2) ? "User: " : "Agent: ") + toSay);
+                chatAdapter.notifyDataSetChanged();
+                chatView.setSelection(chatAdapter.getCount() - 1);
+
+                if ((msg.arg1 & 1) > 0 ) //speak
+                {
+                    ttsCont.speakThis(toSay);
+                }
+                if ((msg.arg1 & 2) > 0 ) //toast
                 {
                     toastWithTimer(toSay, true);
                 }
@@ -232,6 +249,11 @@ public class MainActivity extends AppCompatActivity
         startButton.setOnClickListener(startListener);
         startFromCircle.setOnClickListener(startListener);
         stopButton.setOnClickListener(stopListener);
+
+        chatView = (ListView) findViewById(R.id.listView);
+        chatAdapter = new ListViewCustomAdapter<String>(this, android.R.layout.simple_list_item_1, chatArray);
+        //chatAdapter = new ListViewCustomAdapter<String>(this, R.layout.chat_list_item, chatArray);
+        chatView.setAdapter(chatAdapter);
 
         // minBufSize += 2048;
         // System.out.println("minBufSize: " + minBufSize);
@@ -408,6 +430,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onDestroy(){
+        logicController.stopStreaming();
+        inmindCommandListener.stopListening();
         MessageBroker.getInstance( this ).destroy();
+        super.onDestroy();
     }
 }

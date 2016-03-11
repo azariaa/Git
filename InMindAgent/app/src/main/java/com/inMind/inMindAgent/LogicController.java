@@ -174,7 +174,16 @@ public class LogicController
             {
                 Log.d("ServerConnector", "saying:" + m.group(2));
                 Message msgTalk = new Message();
-                msgTalk.arg1 = 1;
+                msgTalk.arg1 = 3; //say aloud and toast
+                msgTalk.obj = m.group(2).trim();
+                talkHandler.sendMessage(msgTalk);
+            }
+            else if (m.group(1).equalsIgnoreCase(Consts.userSaid))
+            {
+                Log.d("ServerConnector", "user said:" + m.group(2));
+                Message msgTalk = new Message();
+                msgTalk.arg1 = 0; //don't say aloud and don't toast
+                msgTalk.arg2 = 2; //user said
                 msgTalk.obj = m.group(2).trim();
                 talkHandler.sendMessage(msgTalk);
             }

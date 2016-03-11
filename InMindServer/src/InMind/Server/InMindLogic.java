@@ -127,6 +127,8 @@ public class InMindLogic
         {
             if (asrRes != null && asrRes.text != null && !asrRes.text.isEmpty() && userId != null)
             {
+                tcpServer.sendMessage(Consts.userSaid + Consts.commandChar + asrRes.text);
+
                 UserConversation userConversation = null;
                 if (userConversationMap.containsKey(userId))
                     userConversation = userConversationMap.get(userId);

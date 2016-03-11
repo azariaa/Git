@@ -1,18 +1,31 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.inMind.inMindAgent.MainActivity" >
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_vertical_margin"
+                tools:context="com.inMind.inMindAgent.MainActivity">
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/text_to_send"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/border_ui"/>
 
     <EditText
         android:id="@+id/text_to_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/edit_message" />
+        android:layout_above="@+id/button_rec"
+        android:layout_alignParentStart="true"
+        android:hint="@string/edit_message"/>
 
     <Button
         android:id="@+id/button_send_text"
@@ -21,19 +34,18 @@
         android:layout_alignBaseline="@+id/text_to_send"
         android:layout_alignBottom="@+id/text_to_send"
         android:layout_alignParentRight="true"
-        android:text="@string/button_send" 
-        android:onClick="sendText"/>
+        android:onClick="sendText"
+        android:text="@string/button_send"/>
 
-        <Button
-            android:id="@+id/button_stop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/button_rec"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="157dp"
-            android:text="Stop" />
-        
-       <ImageButton
+    <Button
+        android:id="@+id/button_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/image_recording"
+        android:layout_alignStart="@+id/button_rec"
+        android:text="Stop"/>
+
+    <ImageButton
         android:id="@+id/button_rec"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -41,24 +53,26 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
         android:layout_marginTop="37dp"
-        android:src="@android:drawable/ic_btn_speak_now" ></ImageButton>
-       
-       <ImageButton
+        android:src="@android:drawable/ic_btn_speak_now"></ImageButton>
+
+    <ImageButton
         android:id="@+id/image_recording"
-        android:background="@null"
-        android:layout_below="@+id/button_rec"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="68dp"
+        android:background="@null"
         android:src="@drawable/not_recording">
-       </ImageButton>
+    </ImageButton>
 
-<!--         <Button -->
-<!--             android:id="@+id/button_rec" -->
-<!--             android:layout_width="wrap_content" -->
-<!--             android:layout_height="wrap_content" -->
-<!--             android:layout_above="@+id/button_stop" -->
-<!--             android:layout_alignLeft="@+id/text_to_talk" -->
-<!--             android:text="Start" /> -->
+
+    <!--         <Button -->
+    <!--             android:id="@+id/button_rec" -->
+    <!--             android:layout_width="wrap_content" -->
+    <!--             android:layout_height="wrap_content" -->
+    <!--             android:layout_above="@+id/button_stop" -->
+    <!--             android:layout_alignLeft="@+id/text_to_talk" -->
+    <!--             android:text="Start" /> -->
 
 </RelativeLayout>
