@@ -28,4 +28,5 @@ condition,pattern,Say,Set,Additional Command
 ,(?:Tell me |Say )(?:that )?(.*),%r1,"state=""finish""",
 ,.*how.* you,I'm good. Thanks for asking.,"state=""finish""",
 ,(I )?(don't know|do not know|can't think|cannot think).*,That's ok with me.,"state=""finish""",
+,google,here is google,"state=""finish""",Launch^http://google.com
 ,.*,,"state=""return""",

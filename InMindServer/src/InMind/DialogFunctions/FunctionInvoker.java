@@ -15,6 +15,7 @@ public class FunctionInvoker
 
     static final String sayStr = Consts.sayCommand + Consts.commandChar;
     static final String execJson = Consts.execJson + Consts.commandChar;
+    static final String launch = Consts.launchCommand + Consts.commandChar;
     public static final String messageFunction = "messageFunction";
 
     public interface IMessageSender

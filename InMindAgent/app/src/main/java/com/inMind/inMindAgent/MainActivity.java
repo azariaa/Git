@@ -8,8 +8,10 @@ import com.yahoo.inmind.comm.generic.control.MessageBroker;
 
 import InMind.simpleUtils;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -21,11 +23,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,6 +54,7 @@ public class MainActivity extends AppCompatActivity
     private ImageButton startButton, startFromCircle;
     private Button stopButton;
     private ListView chatView;
+    EditText editText;
     ArrayList<String> chatArray = new ArrayList<>();
     //ArrayAdapter<String> chatAdapter;
     ListViewCustomAdapter<String> chatAdapter;
@@ -159,6 +167,10 @@ public class MainActivity extends AppCompatActivity
                         //getconinical...
                         //intent = getIntent();
                     }
+                    else if (appToLaunch.startsWith("http"))
+                    {
+                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse(appToLaunch));
+                    }
                     else
                     {
                         intent = MainActivity.this.getPackageManager()
@@ -194,6 +206,46 @@ public class MainActivity extends AppCompatActivity
                     inmindCommandListener.listenForInmindCommand();
             }
         };
+
+        editText = (EditText) findViewById(R.id.text_to_send);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable e) {
+                String textFromEditView = e.toString();
+                if (textFromEditView.contains("\n"))
+                    sendText(editText);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //nothing needed here...
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //nothing needed here...
+            }
+        });
+        editText.setOnKeyListener(new View.OnKeyListener()
+        {
+            public boolean onKey(View v, int keyCode, KeyEvent event)
+            {
+                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                {
+                    switch (keyCode)
+                    {
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                            sendText(v);
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
+
 
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         //intentFilter.addAction(Intent.ACTION_SCREEN_ON);
@@ -378,7 +430,8 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 1) {
-            if(resultCode == RESULT_OK){
+            if(resultCode == RESULT_OK)
+            {
                 logicController.changeInitIpAddr(data.getStringExtra("ip"));
             }
             if (resultCode == RESULT_CANCELED) {
@@ -392,9 +445,11 @@ public class MainActivity extends AppCompatActivity
      */
     public void sendText(View view)
     {
-
-        EditText editText = (EditText) findViewById(R.id.text_to_send);
         String toSay = editText.getText().toString();
+        editText.getText().clear();
+        findViewById(R.id.main_layout).requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         logicController.ConnectToServer(toSay);
         //ttsCont.speakThis(toSay);
         //toastWithTimer(toSay, true);

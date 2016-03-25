@@ -104,7 +104,7 @@ public class crowdRule
                         os.close();
 
                         if (messageSender != null && sayOrJSon != null)
-                            sendMessageToUser(messageSender, sayOrJSon);
+                            sendMessageToUser(messageSender, sayOrJSon, userId);
                     } catch (Exception ex)
                     {
                         ex.printStackTrace();
@@ -198,7 +198,7 @@ public class crowdRule
         }
     }
 
-    private static void sendMessageToUser(FunctionInvoker.IMessageSender messageSender, SayOrJSon sayOrJSon)
+    private static void sendMessageToUser(FunctionInvoker.IMessageSender messageSender, SayOrJSon sayOrJSon, String userId)
     {
         List<String> sendToUser;
         if (sayOrJSon.sayOrJSonType == SayOrJSon.SayOrJSonType.say)
@@ -210,6 +210,7 @@ public class crowdRule
             sendToUser = new LinkedList<>();
             sendToUser.add(FunctionInvoker.execJson + sayOrJSon.content);
             sendToUser.add(FunctionInvoker.sayStr + "Rule added successfully!");
+            sendToUser.add(FunctionInvoker.launch + "https://talkingtothecrowd.org/ifthenelse/checkRules.php?user="+userId);
         }
         messageSender.sendMessageToUser(sendToUser);
         //                if (!notifiers.containsKey(userId))
