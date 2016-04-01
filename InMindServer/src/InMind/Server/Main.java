@@ -8,7 +8,6 @@ public class Main
 
     public static void main(String[] args)
     {
-
         InMindLogic logic = new InMindLogic();
         //SphinxSignalInfoProvider.staticInitialize();
         logic.runServer();

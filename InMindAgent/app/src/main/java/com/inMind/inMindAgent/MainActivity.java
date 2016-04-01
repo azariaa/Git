@@ -245,6 +245,14 @@ public class MainActivity extends AppCompatActivity
                 return false;
             }
         });
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View view, boolean b)
+            {
+                chatView.setSelection(chatAdapter.getCount() - 1);
+            }
+        });
 
 
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);

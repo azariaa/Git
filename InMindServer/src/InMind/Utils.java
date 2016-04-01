@@ -2,13 +2,63 @@ package InMind;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.logging.*;
 
 /**
  * Created by User on 25-Dec-14.
  */
 public class Utils
 {
+
+    static private final String loggingFile = "./logging/inmindServer.log";
+
+    public static Logger createLogger(String className)
+    {
+        Logger logger = Logger.getLogger(className);
+        //Handler consoleHandler = null;
+        Handler fileHandler  = null;
+        //Creating consoleHandler and fileHandler
+        //consoleHandler = new ConsoleHandler();
+        try
+        {
+            fileHandler  = new FileHandler(loggingFile,true);
+        } catch (IOException e)
+        {
+            File file = new File(loggingFile);
+            File parent = file.getParentFile();
+            if (parent.exists())
+            {
+                e.printStackTrace();
+            }
+            else
+            {
+                parent.mkdir();
+                try
+                {
+                    fileHandler = new FileHandler(loggingFile, true);
+                } catch (IOException e2)
+                {
+                    e2.printStackTrace();
+                }
+            }
+
+        }
+        // Creating SimpleFormatter
+        Formatter simpleFormatter = new SimpleFormatter();
+        // Setting formatter to the handler
+        fileHandler.setFormatter(simpleFormatter);
+        //Assigning handlers to logger object
+        //logger.addHandler(consoleHandler); //don't need console handler, it is added automatically
+        logger.addHandler(fileHandler);
+
+        //Setting levels to handlers and logger
+        //consoleHandler.setLevel(Level.ALL);
+        fileHandler.setLevel(Level.ALL);
+        logger.setLevel(Level.ALL);
+        return logger;
+    }
 
     public static void appendToFile(byte soundbytes[], int soundlength, Path filePath)
     {

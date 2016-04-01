@@ -27,6 +27,7 @@ public class ASR
         public double confidence;
         public String fullJsonRes;
         public List<String> alternatives = new LinkedList<>(); //only alternatives (not including "text")
+        public boolean wasSentAsText = false; //determines whether user sent as text (if set to false, means that user used speech which was converted to text)
     }
 
     public ASR()

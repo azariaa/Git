@@ -83,6 +83,7 @@ public class InMindLogic
                         asrRes = new ASR.AsrRes();
                         asrRes.confidence = 1;
                         asrRes.text = m.group(3).trim();//TODO: might want to remove punctuation.
+                        asrRes.wasSentAsText = true;
                         dealWithText(userId, asrRes);
                     }
 
@@ -123,6 +124,11 @@ public class InMindLogic
             }
         }
 
+        /**
+         * either user sent text directly or, speech which was already converted to text
+         * @param userId
+         * @param asrRes
+         */
         private void dealWithText(String userId, ASR.AsrRes asrRes)
         {
             if (asrRes != null && asrRes.text != null && !asrRes.text.isEmpty() && userId != null)

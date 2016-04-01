@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:descendantFocusability="beforeDescendants"
@@ -14,18 +15,26 @@
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/text_to_send"
+        android:layout_above="@+id/texting"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/border_ui"/>
 
+    <LinearLayout
+        android:id="@+id/texting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_above="@+id/button_rec"
+        >
     <EditText
         android:id="@+id/text_to_send"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button_rec"
         android:layout_alignParentStart="true"
-        android:hint="@string/edit_message"/>
+        android:layout_weight="1"
+        android:hint="@string/edit_message"
+        />
 
     <Button
         android:id="@+id/button_send_text"
@@ -33,9 +42,10 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/text_to_send"
         android:layout_alignBottom="@+id/text_to_send"
-        android:layout_alignParentRight="true"
+        android:layout_alignRight="@+id/text_to_send"
         android:onClick="sendText"
         android:text="@string/button_send"/>
+    </LinearLayout>
 
     <Button
         android:id="@+id/button_stop"

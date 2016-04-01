@@ -3,6 +3,7 @@ package InMind.Server;
 import InMind.Consts;
 import InMind.DialogFunctions.FunctionInvoker;
 import InMind.Server.asr.ASR;
+import InMind.Utils;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -12,6 +13,7 @@ import java.io.FileReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,6 +52,8 @@ public class UserConversation
     ScriptEngineManager mgr;
     ScriptEngine engine;
 
+    Logger logger;
+
     public UserConversation(String userId)
     {
         this.userId = userId;
@@ -57,6 +61,7 @@ public class UserConversation
         clearDialog();
         mgr = new ScriptEngineManager();
         engine = mgr.getEngineByName("JavaScript");
+        logger = Utils.createLogger(UserConversation.class.getName());
     }
 
 
@@ -67,6 +72,7 @@ public class UserConversation
     public ToDoWithConnection dealWithMessage(ASR.AsrRes asrRes, InMindLogic.MessageReceiver.MessageSender messageSender)
     {
         String userText = asrRes.text;
+        logger.info("userid:" + userId + ", userText" +(asrRes.wasSentAsText ? "(as text)" : "(from speech)")+":" + userText);
         boolean firstEnter = false;
         List<String> tmpPrevMessages = new LinkedList<String>(previousMessages);
         previousMessages = new LinkedList<String>();
@@ -154,6 +160,7 @@ public class UserConversation
                 {
                     messageSender.sendMessage(command);//"Say^You Said:" + asrRes.text);
                     System.out.println("sent message to user:" + command);
+                    logger.info("userid:" + userId + ", agentText:" + command);
                     if (saveMessage)
                         previousMessages.add(command);
                 }
