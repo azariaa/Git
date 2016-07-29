@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.inMind.pocketSphinxBridge.PocketSphinxSearcher;
 
+import InMind.Consts;
+
 public class InMindCommandListener
 {
 
@@ -23,7 +25,7 @@ public class InMindCommandListener
         minmindCommandInterface = inmindCommandInterface;
         this.context = context;
 
-        pocketSphinxSearcher = new PocketSphinxSearcher(context,"in mind agent",new PocketSphinxSearcher.SphinxRes(){
+        pocketSphinxSearcher = new PocketSphinxSearcher(context, Consts.agentNameKeyword, new PocketSphinxSearcher.SphinxRes(){
 
             int i =0;
             @Override

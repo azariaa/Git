@@ -154,7 +154,7 @@ public class PocketSphinxSearcher {
         recognizer = defaultSetup()
                 .setAcousticModel(new File(modelsDir, "hmm/en-us-semi"))
                 .setDictionary(new File(modelsDir, "dict/cmu07a.dic"))
-                .setRawLogDir(assetsDir).setKeywordThreshold(1e-20f)
+                .setRawLogDir(assetsDir).setKeywordThreshold(1e-45f)//(1e-20f)
                 .getRecognizer();
         recognizer.addListener(new MyListener(sphinxRes, keyPhrase));
 

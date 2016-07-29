@@ -25,6 +25,9 @@ public class Consts
     static public final String execJson = "execJson";
     static public final String startNewConnection = "StartNewConnection";
     static public final String closeConnection = "CloseConnection";
+    static public final String sugilite = "Sugilite";
+    static public final String sugiliteStartRecording = "startrec"; //e.g. Sugilite^startrec^script name
+    static public final String sugiliteRun = "run"; //e.g. Sugilite^run^script name
 
     //client requests must start with user Id. e.g., userId^SendingText^text
     static public final String clientMessagePattern = "([-a-zA-Z0-9]+)"+Consts.messageSeparatorForPattern+"(\\p{Alpha}*)"+Consts.messageSeparatorForPattern+"(.*)";
@@ -35,4 +38,8 @@ public class Consts
     //connections to other servers
     static public final String asrStr = "ASR";
     static public final String asrCancel = "cancel";
+
+    //from instructable server
+    static public final String runScriptPre = "runScript:";
+    static public final String demonstrateStr = "demonstrate:";
 }

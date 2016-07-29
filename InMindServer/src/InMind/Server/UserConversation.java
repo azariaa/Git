@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 public class UserConversation
 {
     static final String cvsSplitBy = ",(?=([^\"]*\"[^\"]*\")*[^\"]*$)";
-    static final String basePath = "..\\Configurations\\";
+    static final String basePath = "../Configurations";
     static final String dialogReturn = "return";
     public static final String dialogFinish = "finish";
 

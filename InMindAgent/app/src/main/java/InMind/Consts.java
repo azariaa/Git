@@ -20,6 +20,10 @@ public class Consts
     static public final String launchCommand = "Launch";
     static public final String news = "news";
     static public final String execJson = "execJson";
+    static public final String sugilite = "Sugilite";
+    static public final String sugiliteStartRecording = "startrec"; //e.g. Sugilite^startrec^script name
+    static public final String sugiliteRun = "run"; //e.g. Sugilite^run^script name
+
 
     static public final String startNewConnection = "StartNewConnection";
     static public final String closeConnection = "CloseConnection";
@@ -29,4 +33,6 @@ public class Consts
     //client requests
     static public final String requestSendAudio = "RequestSendAudio";
     static public final String sendingText = "SendingText";
+
+    static public final String agentNameKeyword = "exclamation";//"in mind agent";
 }

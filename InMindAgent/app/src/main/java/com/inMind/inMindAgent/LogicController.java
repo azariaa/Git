@@ -194,6 +194,14 @@ public class LogicController
                 msgLaunch.obj = m.group(2).trim();
                 launchHandler.sendMessage(msgLaunch);
             }
+            else if (m.group(1).equalsIgnoreCase(Consts.sugilite))
+            {
+                Log.d("ServerConnector", "Sugilite message:" + m.group(2));
+                Message msgLaunch = new Message();
+                msgLaunch.arg1 = 2;
+                msgLaunch.obj = m.group(2).trim();
+                launchHandler.sendMessage(msgLaunch);
+            }
             else //not basic command, check with middleware
             {
                 String command = m.group(1);

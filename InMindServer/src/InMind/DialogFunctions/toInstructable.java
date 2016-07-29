@@ -1,5 +1,6 @@
 package InMind.DialogFunctions;
 
+import InMind.Consts;
 import InMind.Server.asr.ASR;
 
 import java.util.*;
@@ -79,8 +80,32 @@ public class toInstructable
                     return toInstructable(fullInfo, userId, userText);
                 }
             }
-            String[] res = response.split("\n");
-            return Arrays.asList(res).stream().filter(s->!s.isEmpty()).map(s -> FunctionInvoker.sayStr + s).collect(Collectors.toList());
+            if (response.startsWith(Consts.runScriptPre) || response.startsWith(Consts.demonstrateStr))
+            {
+                List<String> commands = new LinkedList<>();
+
+                if (response.startsWith(Consts.runScriptPre))
+                {
+                    String scriptName = response.substring(Consts.runScriptPre.length()).trim();
+                    String exeCommand = Consts.sugilite + Consts.commandChar;
+                    exeCommand += Consts.sugiliteRun + Consts.commandChar + scriptName;
+                    commands.add(exeCommand);
+                }
+                else
+                {
+                    String scriptName = response.substring(Consts.demonstrateStr.length()).trim();
+                    String exeCommand = Consts.sugilite + Consts.commandChar;
+                    exeCommand += Consts.sugiliteStartRecording + Consts.commandChar + scriptName;
+                    commands.add(exeCommand);
+                    commands.add(FunctionInvoker.sayStr + "Show me how to " + scriptName + "! Once you are done click on the duck and select end recording.");
+                }
+                return commands;
+            }
+            else
+            {
+                String[] res = response.split("\n");
+                return Arrays.asList(res).stream().filter(s -> !s.isEmpty()).map(s -> FunctionInvoker.sayStr + s).collect(Collectors.toList());
+            }
         } catch (Exception ex)
         {
             ex.printStackTrace();

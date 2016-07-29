@@ -13,7 +13,7 @@ public class InteractionManager extends AInteractionManager
     }
 
     final double dMaxUttDuration = 30000;
-    final double dMinUttDuration = 1000;
+    final double dMinUttDuration = 500;//1000;
     //final double dActionThreshold = 300;
     //final double dListenThreshold = 1000;
     final double dStopSpeakingThreshold = 250;//150;

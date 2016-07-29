@@ -6,6 +6,7 @@ import java.util.Date;
 import com.inMind.inMindAgent.InMindCommandListener.InmindCommandInterface;
 import com.yahoo.inmind.comm.generic.control.MessageBroker;
 
+import InMind.Consts;
 import InMind.simpleUtils;
 
 import android.app.Activity;
@@ -15,6 +16,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.hardware.Camera;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity
 
 
         // Initializing the Message Broker
-        MessageBroker.getInstance( this );
+        MessageBroker.getInstance(this);
 
 
         userNotifierHandler = new Handler(new Handler.Callback()
@@ -91,6 +93,47 @@ public class MainActivity extends AppCompatActivity
                     if (toToast.equals("Talk!")) //if needs to talk, set recording image. //TODO: should be done nicer (all strings should be refactorred).
                     {
                         ((ImageView) findViewById(R.id.image_recording)).setImageResource(R.drawable.rec_recording);
+
+                        //turn on flashlight
+                        new Thread()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                try
+                                {
+                                    //in newer versions (23 and up) can use CameraManager.setTorchMode instead and no need for camera permission
+                                    final Camera cam = Camera.open();
+                                    Camera.Parameters p = cam.getParameters();
+                                    p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                                    cam.setParameters(p);
+                                    cam.startPreview();
+
+                                    new Thread()
+                                    {
+                                        @Override
+                                        public void run()
+                                        {
+                                            try
+                                            {
+                                                sleep(10);
+                                                cam.stopPreview();
+                                                cam.release();
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }.start();
+                                }
+                                catch (Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }.start();
+
                     }
                     else
                         ((ImageView) findViewById(R.id.image_recording)).setImageResource(R.drawable.not_recording);
@@ -136,11 +179,11 @@ public class MainActivity extends AppCompatActivity
                 chatAdapter.notifyDataSetChanged();
                 chatView.setSelection(chatAdapter.getCount() - 1);
 
-                if ((msg.arg1 & 1) > 0 ) //speak
+                if ((msg.arg1 & 1) > 0) //speak
                 {
                     ttsCont.speakThis(toSay);
                 }
-                if ((msg.arg1 & 2) > 0 ) //toast
+                if ((msg.arg1 & 2) > 0) //toast
                 {
                     toastWithTimer(toSay, true);
                 }
@@ -154,7 +197,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean handleMessage(Message msg)
             {
-                if (msg.arg1 == 1)
+                Log.d("handleMessage", "launchHandler arg1=" + msg.arg1 + " obj=" + msg.obj.toString());
+                if (msg.arg1 == 1) //launch app
                 {
                     // Pattern p = Pattern.compile("(.*)/(.*)");
                     // Matcher m = p.matcher(msg.obj.toString());
@@ -163,7 +207,7 @@ public class MainActivity extends AppCompatActivity
                     Intent intent;
                     if (appToLaunch.equalsIgnoreCase("InMind agent"))
                     {
-                        intent = new Intent(MainActivity.this,MainActivity.class);
+                        intent = new Intent(MainActivity.this, MainActivity.class);
                         //getconinical...
                         //intent = getIntent();
                     }
@@ -184,10 +228,38 @@ public class MainActivity extends AppCompatActivity
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             MainActivity.this.startActivity(intent);
                             Log.d("Main Activity", "Launching intent");
-                        }catch (Exception ex)
-                        {
-                            Log.e("MainActivity","error starting activity" + ex.getMessage());
                         }
+                        catch (Exception ex)
+                        {
+                            Log.e("MainActivity", "error starting activity" + ex.getMessage());
+                        }
+                    }
+
+                }
+                else if (msg.arg1 == 2) //Sugilite
+                {
+                    String sugiliteExtra = msg.obj.toString();
+                    String[] sugiliteArgs = sugiliteExtra.split(Consts.messageSeparatorForPattern);
+                    Log.d("handleMessage", "start: " + sugiliteArgs[0] + " " + sugiliteArgs[1]);
+                    if (sugiliteArgs[0].equalsIgnoreCase(Consts.sugiliteStartRecording))
+                    {
+                        Log.d("handleMessage", "starting new recording named: " + sugiliteArgs[1]);
+                        Intent intent = new Intent("edu.cmu.hcii.sugilite.COMMUNICATION");
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("messageType", "START_RECORDING");
+                        intent.putExtra("scriptName", sugiliteArgs[1]);
+                        MainActivity.this.startActivityForResult(intent, 1);
+                    }
+                    else if (sugiliteArgs[0].equalsIgnoreCase(Consts.sugiliteRun))
+                    {
+                        Log.d("handleMessage", "running script named: " + sugiliteArgs[1]);
+                        Intent intent = new Intent("edu.cmu.hcii.sugilite.COMMUNICATION");
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("messageType", "RUN_SCRIPT");
+                        intent.putExtra("scriptName", sugiliteArgs[1]);
+                        MainActivity.this.startActivityForResult(intent, 1);
                     }
 
                 }
@@ -208,21 +280,25 @@ public class MainActivity extends AppCompatActivity
         };
 
         editText = (EditText) findViewById(R.id.text_to_send);
-        editText.addTextChangedListener(new TextWatcher() {
+        editText.addTextChangedListener(new TextWatcher()
+        {
             @Override
-            public void afterTextChanged(Editable e) {
+            public void afterTextChanged(Editable e)
+            {
                 String textFromEditView = e.toString();
                 if (textFromEditView.contains("\n"))
                     sendText(editText);
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
                 //nothing needed here...
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
                 //nothing needed here...
             }
         });
@@ -303,7 +379,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         startButton = (ImageButton) findViewById(R.id.button_rec);
-        startFromCircle  = (ImageButton) findViewById(R.id.image_recording);
+        startFromCircle = (ImageButton) findViewById(R.id.image_recording);
         stopButton = (Button) findViewById(R.id.button_stop);
 
         startButton.setOnClickListener(startListener);
@@ -428,21 +504,24 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.action_changeIp)
         {
             Intent intent = new Intent(this, IpEditActivity.class);
-            intent.putExtra("ip",logicController.tcpIpAddr);
-            startActivityForResult(intent,1);
+            intent.putExtra("ip", logicController.tcpIpAddr);
+            startActivityForResult(intent, 1);
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
 
-        if (requestCode == 1) {
-            if(resultCode == RESULT_OK)
+        if (requestCode == 1)
+        {
+            if (resultCode == RESULT_OK)
             {
                 logicController.changeInitIpAddr(data.getStringExtra("ip"));
             }
-            if (resultCode == RESULT_CANCELED) {
+            if (resultCode == RESULT_CANCELED)
+            {
                 //Write your code if there's no result
             }
         }
@@ -492,10 +571,11 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public void onDestroy(){
+    public void onDestroy()
+    {
         logicController.stopStreaming();
         inmindCommandListener.stopListening();
-        MessageBroker.getInstance( this ).destroy();
+        MessageBroker.getInstance(this).destroy();
         super.onDestroy();
     }
 }

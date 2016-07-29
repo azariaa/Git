@@ -2,7 +2,8 @@
 
 grammar simpleCommand;
 
-public <simpleCommand> = next |
-          previous  |
-          expand   |
-          in mind agent;
+//public <simpleCommand> = //bets |
+          //next |
+          //previous  |
+          //expand   |
+          //in mind agent;

@@ -31,7 +31,7 @@ public class AudioTopDirector
     int udpPort;
     ByteArrayBuffer allAudioFromBeginning;
 
-    static final Path folderPath = Paths.get("..\\UserData");
+    static final Path folderPath = Paths.get("../UserData");
     static final String fileStart = "InputAt";
     Path filePath;
     ASR asr;
