@@ -10,7 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.yahoo.inmind.comm.generic.control.MessageBroker;
+//import com.yahoo.inmind.comm.generic.control.MessageBroker;
 
 /*
  * This class is in-charge of all connections to the server. 
@@ -58,10 +58,10 @@ public class LogicController
         this.uniqueId = uniqueId;
     }
 
-    public void ConnectToServer(String sendThisText)
+    public void ConnectToServer(String sendThisText, boolean isCommand)
     {
         //closeConnection();
-        sendMessageUsingTcp(uniqueId + Consts.commandChar + Consts.sendingText + Consts.commandChar + sendThisText);
+        sendMessageUsingTcp(uniqueId + Consts.commandChar + (isCommand ? Consts.sendingCommand : Consts.sendingText) + Consts.commandChar + sendThisText);
     }
 
     public void ConnectToServer()

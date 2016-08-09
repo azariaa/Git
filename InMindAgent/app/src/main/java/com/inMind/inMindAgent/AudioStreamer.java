@@ -13,7 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.yahoo.inmind.services.news.control.util.JsonUtil;
+//import com.yahoo.inmind.services.news.control.util.JsonUtil;
 
 import InMind.Consts;
 

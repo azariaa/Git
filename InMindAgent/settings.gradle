@@ -1,1 +1,2 @@
-include ':middleware', ':app'
+//include ':middleware', ':app'
+include ':app'

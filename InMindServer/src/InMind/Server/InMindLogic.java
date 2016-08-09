@@ -78,13 +78,13 @@ public class InMindLogic
 
                     ASR.AsrRes asrRes = null;
 
-                    if (m.group(2).equalsIgnoreCase(Consts.sendingText))
+                    if (m.group(2).equalsIgnoreCase(Consts.sendingText) || m.group(2).equalsIgnoreCase(Consts.sendingCommand))
                     {
                         asrRes = new ASR.AsrRes();
                         asrRes.confidence = 1;
                         asrRes.text = m.group(3).trim();//TODO: might want to remove punctuation.
                         asrRes.wasSentAsText = true;
-                        dealWithText(userId, asrRes);
+                        dealWithText(userId, asrRes, m.group(2).equalsIgnoreCase(Consts.sendingText));
                     }
 
                     if (m.group(2).equalsIgnoreCase(Consts.requestSendAudio))
@@ -98,7 +98,7 @@ public class InMindLogic
                             @Override
                             public void dealWithAsrRes(ASR.AsrRes asrRes)
                             {
-                                dealWithText(userId, asrRes);
+                                dealWithText(userId, asrRes, true);
                             }
 
                             @Override
@@ -129,11 +129,12 @@ public class InMindLogic
          * @param userId
          * @param asrRes
          */
-        private void dealWithText(String userId, ASR.AsrRes asrRes)
+        private void dealWithText(String userId, ASR.AsrRes asrRes, boolean echoBackToUser)
         {
             if (asrRes != null && asrRes.text != null && !asrRes.text.isEmpty() && userId != null)
             {
-                tcpServer.sendMessage(Consts.userSaid + Consts.commandChar + asrRes.text);
+                if (echoBackToUser)
+                    tcpServer.sendMessage(Consts.userSaid + Consts.commandChar + asrRes.text);
 
                 UserConversation userConversation = null;
                 if (userConversationMap.containsKey(userId))

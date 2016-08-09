@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import com.inMind.inMindAgent.InMindCommandListener.InmindCommandInterface;
-import com.yahoo.inmind.comm.generic.control.MessageBroker;
+//import com.yahoo.inmind.comm.generic.control.MessageBroker;
 
 import InMind.Consts;
 import InMind.simpleUtils;
@@ -48,6 +48,7 @@ import android.widget.Toast;
  */
 public class MainActivity extends AppCompatActivity
 {
+    public static MainActivity selfPointer = null; //Added to communicate with Sugilite, probably not the best way.
 
     TTScontroller ttsCont;
     LogicController logicController;
@@ -73,10 +74,11 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("Main", "onCreate");
+        selfPointer = this;
 
 
         // Initializing the Message Broker
-        MessageBroker.getInstance(this);
+        //MessageBroker.getInstance(this);
 
 
         userNotifierHandler = new Handler(new Handler.Callback()
@@ -248,7 +250,8 @@ public class MainActivity extends AppCompatActivity
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("messageType", "START_RECORDING");
-                        intent.putExtra("scriptName", sugiliteArgs[1]);
+                        intent.putExtra("arg1"/*"scriptName"*/, sugiliteArgs[1]);
+                        intent.putExtra("arg2"/*"callbackString"*/, "android.intent.action.ComWithSugilite");
                         MainActivity.this.startActivityForResult(intent, 1);
                     }
                     else if (sugiliteArgs[0].equalsIgnoreCase(Consts.sugiliteRun))
@@ -259,6 +262,18 @@ public class MainActivity extends AppCompatActivity
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("messageType", "RUN_SCRIPT");
                         intent.putExtra("scriptName", sugiliteArgs[1]);
+                        MainActivity.this.startActivityForResult(intent, 1);
+                    }
+                    else if (sugiliteArgs[0].equalsIgnoreCase(Consts.sugiliteExecJson))
+                    {
+                        Log.d("handleMessage", "running script using json");
+                        Log.d("handleMessage", "json: " + sugiliteArgs[1]);
+                        Intent intent = new Intent("edu.cmu.hcii.sugilite.COMMUNICATION");
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("messageType", "RUN_JSON");
+                        intent.putExtra("arg1"/*JSON*/, sugiliteArgs[1]);
+                        intent.putExtra("arg2"/*callbackString*/, ""); //TODO: add callback
                         MainActivity.this.startActivityForResult(intent, 1);
                     }
 
@@ -537,7 +552,7 @@ public class MainActivity extends AppCompatActivity
         findViewById(R.id.main_layout).requestFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        logicController.ConnectToServer(toSay);
+        logicController.ConnectToServer(toSay, false);
         //ttsCont.speakThis(toSay);
         //toastWithTimer(toSay, true);
     }
@@ -548,6 +563,24 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onClick(View arg0)
         {
+            ////ignore.... debug!!! remove this!!!
+//            Log.d("InMind stop button", "running script using json by stop!!! remove!!!!");
+//            Intent intent = new Intent("edu.cmu.hcii.sugilite.COMMUNICATION");
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            intent.putExtra("messageType", "RUN_JSON");
+//            intent.putExtra("arg1"/*JSON*/, "{\"nextBlock\":{\"actionType\":\"CLICK\",\"filter\":{\"text\":\"Contacts\"}}}");
+//            intent.putExtra("arg2"/*callbackString*/, "");
+//            MainActivity.this.startActivityForResult(intent, 1);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+//            try {
+//                startActivity(intent);
+//            }
+//            catch (Exception e){
+//                Log.e("InMind sendCallbackMsg", "exception while callingback");
+//                Log.e("InMind sendCallbackMsg", "exception while callingback" + e.getMessage());
+//            }
+            //////////////////////
             Log.d("Main", "Stop Clicked");
             // audioStreamer.stopStreaming();
             logicController.stopStreaming();
@@ -575,7 +608,7 @@ public class MainActivity extends AppCompatActivity
     {
         logicController.stopStreaming();
         inmindCommandListener.stopListening();
-        MessageBroker.getInstance(this).destroy();
+        //MessageBroker.getInstance(this).destroy();
         super.onDestroy();
     }
 }

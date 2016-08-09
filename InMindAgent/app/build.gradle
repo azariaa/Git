@@ -59,7 +59,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':middleware')
+//    compile project(':middleware')
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.android.support:design:22.2.1'
 
