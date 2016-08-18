@@ -16,7 +16,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.hardware.camera2.CameraManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -105,7 +107,12 @@ public class MainActivity extends AppCompatActivity
                                 try
                                 {
                                     //in newer versions (23 and up) can use CameraManager.setTorchMode instead and no need for camera permission
+//                                    CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+//                                    String[] list = manager.getCameraIdList();
+//                                    manager.setTorchMode(list[0], true);
+
                                     final Camera cam = Camera.open();
+                                    cam.setPreviewTexture(new SurfaceTexture(312)); //this line was added to support Android 6.0
                                     Camera.Parameters p = cam.getParameters();
                                     p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
                                     cam.setParameters(p);
