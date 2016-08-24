@@ -1,5 +1,6 @@
 package InMind.DialogFunctions;
 
+import com.sun.deploy.net.URLEncoder;
 import com.sun.net.httpserver.HttpExchange;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -72,7 +73,7 @@ public class dialogUtils
                 }
                 else
                 {
-                    parms.append(parm + "=" + parameters.get(parm));
+                    parms.append(parm + "=" + URLEncoder.encode(parameters.get(parm), "UTF-8"));
                 }
                 firstParam = false;
             }

@@ -95,6 +95,7 @@ public class toInstructable
                         String exeCommand = Consts.sugilite + Consts.commandChar;
                         exeCommand += Consts.sugiliteExecJson + Consts.commandChar + jsonToExec;
                         commands.add(exeCommand);
+                        commands.add(FunctionInvoker.sayStr + "Executing."); //cannot add script name, since there may be different scripts combined, and there also may be no script name
                     }
                     else
                     {
