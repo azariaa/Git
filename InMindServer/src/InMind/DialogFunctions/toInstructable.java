@@ -95,7 +95,8 @@ public class toInstructable
                         String exeCommand = Consts.sugilite + Consts.commandChar;
                         exeCommand += Consts.sugiliteExecJson + Consts.commandChar + jsonToExec;
                         commands.add(exeCommand);
-                        commands.add(FunctionInvoker.sayStr + "Executing."); //cannot add script name, since there may be different scripts combined, and there also may be no script name
+                        if (res.length == 1) //only if this is the only command being executed we say "Executing". This is to enable the user to define what should be said (e.g. say ordering cappuccino)
+                            commands.add(FunctionInvoker.sayStr + "Executing."); //cannot add script name, since there may be different scripts combined, and there also may be no script name
                     }
                     else
                     {
