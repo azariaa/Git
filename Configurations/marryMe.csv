@@ -1,6 +1,0 @@
-conditions,pattern,Say,Set
-"state=""start""",.*,"I don't usually marry humans, but if you say it three more times I might.","count=0;state=""waiting"""
-,goodbye|exit|quit|stop,Goodbye!,"state=""finish"""
-count=2,(?:Will | would )?(you )?(please )?Marry me,"I was not serious, but I truly appreciate your persistency!","state=""finish"""
-,(?:Will | would )?(you )?(please )?Marry me,I said three times!,count=count+1
-,.*,,"state=""return"""

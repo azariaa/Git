@@ -1,6 +1,0 @@
-conditions,pattern,Say,Set
-"state=""start""",.*(?: in )(.*),"Just a minute, let me look that up for you.","state=""finish"";location=""%1"";callfun=""getWeatherInfo"""
-"state=""start""",.*,Which location are you interested in?,"state=""get_location"""
-,goodbye|exit|quit|stop,Goodbye!,"state=""finish"""
-"state=""get_location""",(?:Um |Oh )?(?:(.*)|(.*) of course),"Just a minute, let me look that up for you.","state=""finish"";location=""%1"";callfun=""getWeatherInfo"""
-,.*,,"state=""return"""

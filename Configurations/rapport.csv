@@ -1,3 +1,0 @@
-conditions,pattern,Say,Set
-,goodbye|exit|quit|stop,Goodbye!,"state=""finish"""
-,.*,,"callfun=""forwardToRapport"""

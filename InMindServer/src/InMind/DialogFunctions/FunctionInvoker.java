@@ -30,14 +30,33 @@ public class FunctionInvoker
         List<String> toSend = null;
         try
         {
-            Package pack = FunctionInvoker.class.getPackage();
-            Method method = Class.forName(pack.getName() + "." + dialogFileBase).getMethod(funName, Map.class, String.class, ASR.AsrRes.class);
-            if (method != null)
+            //hack to take care of toInstructable which raised ClassNotFoundException when running through jar file
+            if (dialogFileBase.equals("toInstructable"))
             {
-                toSend = (List<String>)method.invoke(null, fullInfo, userId, asrRes);
+                if (funName.equals("toInstructable"))
+                {
+                    toSend = toInstructable.toInstructable(fullInfo, userId, asrRes);
+                }
+                else if (funName.equals("saveEmailPassword"))
+                {
+                    toSend = toInstructable.saveEmailPassword(fullInfo, userId, asrRes);
+                }
+            }
+            else
+            {
+                //removed reflection for now.//TODO: will be removed from future versions
+                Package pack = FunctionInvoker.class.getPackage();
+                Method method = Class.forName(pack.getName() + "." + dialogFileBase).getMethod(funName, Map.class, String.class, ASR.AsrRes.class);
+                if (method != null)
+                {
+                    System.out.print(method.toString());
+                    toSend = (List<String>) method.invoke(null, fullInfo, userId, asrRes);
+                }
             }
         } catch (Exception e)//IllegalAccessException | InvocationTargetException | NoSuchMethodException | ClassNotFoundException e)
         {
+            if (funName != null && dialogFileBase != null)
+                System.out.println("Error while trying to invoke:" + funName + " from:" + dialogFileBase);
             e.printStackTrace();
         }
 
