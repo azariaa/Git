@@ -76,6 +76,15 @@
         android:src="@drawable/not_recording">
     </ImageButton>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Say Yes"
+        android:id="@+id/say_yes_button"
+        android:layout_below="@+id/button_rec"
+        android:onClick="sayYes"
+        android:layout_alignParentEnd="true"/>
+
 
     <!--         <Button -->
     <!--             android:id="@+id/button_rec" -->

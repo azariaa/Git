@@ -564,6 +564,11 @@ public class MainActivity extends AppCompatActivity
         //toastWithTimer(toSay, true);
     }
 
+    public void sayYes(View view)
+    {
+        logicController.ConnectToServer("yes", false);
+    }
+
     private final OnClickListener stopListener = new OnClickListener()
     {
 
