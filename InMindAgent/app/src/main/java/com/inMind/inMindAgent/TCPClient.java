@@ -93,9 +93,13 @@ public class TCPClient
         Log.d("TCP Client", "C: sending: " + message);
         if (!tryingToConnect && !mConnected)
         {
+            Log.w("TCP Client", "C:tried sending message but not connected, so connecting first. message: " + message);
             connect();
-            Log.e("TCP Client", "C: Error, tried sending message but not connected: " + message);
-            return;
+            if (!tryingToConnect && !mConnected)
+            {
+                Log.e("TCP Client", "C:Error, tried sending message but could not connected. message: " + message);
+                return;
+            }
         }
         if (tryingToConnect && !mConnected)
         {
@@ -152,18 +156,40 @@ public class TCPClient
                     InetAddress serverAddr = InetAddress.getByName(ipAddr);
                     Log.d("TCP Client", "C: Connecting...");
 
-                    socket.connect(new InetSocketAddress(serverAddr, portNum),
-                            connectionTimeout);
+                    final int maxTrials = 5;
+                    for (int i = 0; i < maxTrials; i++)
+                    {
+                        try
+                        {
+                            socket.connect(new InetSocketAddress(serverAddr, portNum),
+                                    connectionTimeout);
+                            break;
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.e("TCP Client", "C: problems connecting! i=" + i + " ex=" + ex.getMessage());
+                            if (i+1 == maxTrials)
+                                throw ex;
+                            socket.close();
+                            Thread.sleep((i+1)*25);
+                            socket = new Socket();
+                            socket.setSoTimeout(connectionTimeout);
+                        }
+                    }
+
                 }
                 catch (Exception ex)
                 {
-//            Message msgNotConnect = new Message();
-//            msgNotConnect.arg1 = 1;
-//            msgNotConnect.arg2 = 1; //important message.
-//            msgNotConnect.obj = "Could not connect!";
-                    mMessageListener.messageReceived(Consts.sayCommand + Consts.commandChar + "Could not connect.");
+                    try
+                    {
+                        socket.close();
+                    }
+                    catch (Exception ignored)
+                    {
+                    }
                     mRun = false;
-                    Log.e("LogicControl", "C: Could not Connect!");
+                    mMessageListener.messageReceived(Consts.sayCommand + Consts.commandChar + "Could not connect.");
+                    Log.e("TCP Client", "C: Could not Connect! ex=" + ex.getMessage());
                     tryingToConnect = false;
                     synchronized (waitingForConnect)
                     {
@@ -182,15 +208,6 @@ public class TCPClient
                             socket.getOutputStream())), true);
 
                     Log.d("TCP Client", "C: Sent.");
-
-//            for (String message : messages)
-//            {
-//                if (!message.isEmpty())
-//                {
-//                    out.println(message);
-//                    out.flush();
-//                }
-//            }
 
                     // receive the message which the server sends back
                     in = new BufferedReader(new InputStreamReader(
@@ -212,6 +229,10 @@ public class TCPClient
                         try
                         {
                             serverMessage = in.readLine();
+                            if (serverMessage == null)
+                            {
+                                mRun = false;
+                            }
                         }
                         catch (Exception ignored)
                         {
