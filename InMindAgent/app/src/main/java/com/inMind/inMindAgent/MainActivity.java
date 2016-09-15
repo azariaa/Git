@@ -9,6 +9,7 @@ import com.inMind.inMindAgent.InMindCommandListener.InmindCommandInterface;
 import InMind.Consts;
 import InMind.simpleUtils;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,17 +20,21 @@ import android.graphics.Color;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraManager;
+import android.hardware.display.DisplayManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -68,6 +73,7 @@ public class MainActivity extends AppCompatActivity
     // these all be
     // combined to
     // one handler?
+    //private Handler clearScreenFlags;
     private LogicController.syncNotifiers startStopRecNotifier;
 
     @Override
@@ -250,6 +256,8 @@ public class MainActivity extends AppCompatActivity
                     String sugiliteExtra = msg.obj.toString();
                     String[] sugiliteArgs = sugiliteExtra.split(Consts.messageSeparatorForPattern);
                     Log.d("handleMessage", "start: " + sugiliteArgs[0] + " " + sugiliteArgs[1]);
+                    //Sugilite requires screen to be on in order to operate
+                    turnOnScreen();
                     if (sugiliteArgs[0].equalsIgnoreCase(Consts.sugiliteStartRecording))
                     {
                         Log.d("handleMessage", "starting new recording named: " + sugiliteArgs[1]);
@@ -283,11 +291,22 @@ public class MainActivity extends AppCompatActivity
                         intent.putExtra("arg2"/*callbackString*/, ""); //TODO: add callback
                         MainActivity.this.startActivityForResult(intent, 1);
                     }
-
                 }
                 return false;
             }
         });
+
+//        clearScreenFlags = new Handler(new Handler.Callback()
+//        {
+//            @Override
+//            public boolean handleMessage(Message message)
+//            {
+//                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+//                        | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+//                        | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+//                return false;
+//            }
+//        });
 
         startStopRecNotifier = new LogicController.syncNotifiers()
         {
@@ -300,6 +319,7 @@ public class MainActivity extends AppCompatActivity
                     inmindCommandListener.listenForInmindCommand();
             }
         };
+
 
         editText = (EditText) findViewById(R.id.text_to_send);
         editText.addTextChangedListener(new TextWatcher()
@@ -418,6 +438,69 @@ public class MainActivity extends AppCompatActivity
 
         // attach a Message. set msg.arg to 1 and msg.obj to string for toast.
         Log.d("Main", "onCreate-End");
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
+    private void turnOnScreen()
+    {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1)
+            return;
+        try
+        {
+            DisplayManager dm = (DisplayManager) getApplicationContext().getSystemService(Context.DISPLAY_SERVICE);
+            for (Display display : dm.getDisplays())
+            {
+                if (display.getState() != Display.STATE_ON)
+                {
+
+                    Intent intent = new Intent(this, ScreenOn.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    MainActivity.this.startActivityForResult(intent, 1);
+                    break;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.w("MainAtivity", "exception while trying to turn on screen.");
+        }
+
+//        try
+//        {
+//            PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
+//            if (!pm.isScreenOn())
+//            {
+//                PowerManager.WakeLock wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "LIA");
+//                wakeLock.acquire();
+//                wakeLock.release();
+//            }
+//        } catch (Exception ex)
+//        {
+//            Log.w("MainAtivity", "exception while trying to turn on screen.");
+//        }
+
+        //flags seems to be very hard...
+
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+//                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+////                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+//                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+//        Thread turnOfFlagsWithDelay = new Thread(new Runnable() {
+//            @Override
+//            public void run(){
+//                try
+//                {
+//                    Thread.sleep(5000);
+//                }
+//                catch (Exception ignored)
+//                {
+//                }
+//                clearScreenFlags.sendEmptyMessage(0);
+//            }
+//        });
+//        turnOfFlagsWithDelay.start();
+
     }
 
 

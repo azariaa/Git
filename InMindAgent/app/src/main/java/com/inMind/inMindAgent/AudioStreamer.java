@@ -138,8 +138,20 @@ public class AudioStreamer
                     Log.d("AudioStreamer", "Recorder initialized");
 
                     recorder.startRecording();
+                    Log.d("AudioStreamer", "Recordering");
 
-                    //Added to remove initial noise which Android (or at least Nexus 5) seems to have at the beginning. //can try using noise removal algorithms instead, look at Audacity.
+                    if (!status)
+                    {
+                        Message msgTalk = new Message();
+                        msgTalk.arg1 = 1;
+                        msgTalk.obj = "Could not initialize mic. on time!";
+                        userNotifierHandler.sendMessage(msgTalk);
+                    }
+                    else
+                    {
+
+
+                        //Added to remove initial noise which Android (or at least Nexus 5) seems to have at the beginning. //can try using noise removal algorithms instead, look at Audacity.
 //					Message msgWait = new Message();
 //					msgWait.arg1 = 1;
 //					msgWait.obj = "Wait!";
@@ -147,20 +159,21 @@ public class AudioStreamer
 //
 //					Thread.sleep(1600);
 
-                    Message msgTalk = new Message();
-                    msgTalk.arg1 = 1;
-                    msgTalk.arg2 = 1; //important toast
-                    msgTalk.obj = "Talk!";
-                    userNotifierHandler.sendMessage(msgTalk);
-                    //Message msgPlayTone = new Message();
-                    //msgPlayTone.arg1 = 2;
-                    //toasterHandler.sendMessage(msgPlayTone);
+                        Message msgTalk = new Message();
+                        msgTalk.arg1 = 1;
+                        msgTalk.arg2 = 1; //important toast
+                        msgTalk.obj = "Talk!";
+                        userNotifierHandler.sendMessage(msgTalk);
+                        //Message msgPlayTone = new Message();
+                        //msgPlayTone.arg1 = 2;
+                        //toasterHandler.sendMessage(msgPlayTone);
 
 //					Thread.sleep(300);
 //					//couldn't find a better way to clear buffer.
 //					byte[] tmpbuffer = new byte[minBufSize*1000];
 //					recorder.read(tmpbuffer, 0, minBufSize*1000);
 //					tmpbuffer=null;
+                    }
 
                     while (status == true)
                     {

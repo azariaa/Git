@@ -43,12 +43,16 @@
             android:name=".IpEditActivity"
             android:label="@string/title_activity_ip_edit">
         </activity>
-        <activity android:name=".ComWithSugilite"
-                  android:theme="@android:style/Theme.NoDisplay">
+        <activity
+            android:name=".ComWithSugilite"
+            android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>
                 <action android:name="android.intent.action.ComWithSugilite"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".ScreenOn">
         </activity>
     </application>
 

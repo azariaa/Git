@@ -223,6 +223,7 @@ public class TCPClient
                     {
                         waitingForConnect.notifyAll();
                     }
+                    int receiveExceptionCount = 0;
                     while (mRun)
                     {
                         Log.d("TCP Client", "inner loop.");
@@ -234,9 +235,16 @@ public class TCPClient
                                 mRun = false;
                             }
                         }
-                        catch (Exception ignored)
+                        catch (Exception ex)
                         {
-                            Log.d("TCP Client", "C: Didn't receive a message");
+                            Log.d("TCP Client", "C: Didn't receive a message exception:" + ex.toString());
+                            receiveExceptionCount++;
+                            if (receiveExceptionCount >= 5)
+                            {
+                                mRun = false;
+                                closeConnection();
+                                break;
+                            }
                         }
 
                         if (serverMessage != null && mMessageListener != null)
@@ -246,11 +254,12 @@ public class TCPClient
                             // call the method messageReceived from MyActivity class
                             mMessageListener.messageReceived(serverMessage);
                             serverMessage = null;
+                            receiveExceptionCount = 0;
                         }
                     }
 
-                    Log.d("RESPONSE FROM SERVER", "S: Received Message: '"
-                            + serverMessage + "'");
+//                    Log.d("RESPONSE FROM SERVER", "S: Received Message: '"
+//                            + serverMessage + "'");
 
                 }
                 catch (Exception e)
