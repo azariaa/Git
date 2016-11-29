@@ -597,7 +597,7 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.action_toDesk)
         {
             if (logicController != null)
-                logicController.changeInitIpAddr("128.2.213.163");
+                logicController.changeInitIpAddr("34.193.23.122");
             return true;
         }
         else if (id == R.id.action_toLap)

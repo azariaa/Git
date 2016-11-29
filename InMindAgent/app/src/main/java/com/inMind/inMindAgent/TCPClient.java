@@ -86,51 +86,70 @@ public class TCPClient
     /**
      * Sends the message entered by client to the server
      *
-     * @param message text entered by client
+     * @param messageToSend text entered by client
      */
-    public void sendMessage(String message)
+    public void sendMessage(String messageToSend)
     {
-        Log.d("TCP Client", "C: sending: " + message);
-        if (!tryingToConnect && !mConnected)
-        {
-            Log.w("TCP Client", "C:tried sending message but not connected, so connecting first. message: " + message);
-            connect();
-            if (!tryingToConnect && !mConnected)
-            {
-                Log.e("TCP Client", "C:Error, tried sending message but could not connected. message: " + message);
-                return;
-            }
-        }
-        if (tryingToConnect && !mConnected)
-        {
-            synchronized (waitingForConnect)
-            {
+        final String message = messageToSend;
+        Thread tcpThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
                 try
                 {
-                    Log.d("TCP Client", "C: waiting for connection.");
-                    waitingForConnect.wait();
+                    Log.d("TCP Client", "C: sending: " + message);
+                    if (!tryingToConnect && !mConnected)
+                    {
+                        Log.w("TCP Client", "C:tried sending message but not connected, so connecting first. message: " + message);
+                        connect();
+                        if (!tryingToConnect && !mConnected)
+                        {
+                            Log.e("TCP Client", "C:Error, tried sending message but could not connected. message: " + message);
+                            return;
+                        }
+                    }
+                    if (tryingToConnect && !mConnected)
+                    {
+                        synchronized (waitingForConnect)
+                        {
+                            try
+                            {
+                                Log.d("TCP Client", "C: waiting for connection.");
+                                waitingForConnect.wait();
+                            }
+                            catch (Exception ignored)
+                            {
+                            }
+                        }
+                    }
+                    if (mConnected)
+                    {
+                        if (out != null && !out.checkError())
+                        {
+                            Log.d("TCP Client", "C: printing message. ");
+                            out.println(message);
+                            out.flush();
+                            Log.d("TCP Client", "C: message flushed. ");
+                        }
+                        else
+                            Log.e("TCP Client", "C: error printing message. ");
+                    }
+                    else
+                    {
+                        Log.e("TCP Client", "C: error, could not connect. ");
+                    }
+
                 }
-                catch (Exception ignored)
+                catch (Exception ex)
                 {
+                    Log.e("TCP Client", "C: Exception!" + ex.getMessage());
+                    ex.printStackTrace();
+                    mMessageListener.messageReceived(Consts.sayCommand + Consts.commandChar + "Error while connecting.");
                 }
             }
-        }
-        if (mConnected)
-        {
-            if (out != null && !out.checkError())
-            {
-                Log.d("TCP Client", "C: printing message. ");
-                out.println(message);
-                out.flush();
-                Log.d("TCP Client", "C: message flushed. ");
-            }
-            else
-                Log.e("TCP Client", "C: error printing message. ");
-        }
-        else
-        {
-            Log.e("TCP Client", "C: error, could not connect. ");
-        }
+        });
+
+        tcpThread.start();
     }
 
     public void closeConnection()
@@ -168,10 +187,10 @@ public class TCPClient
                         catch (Exception ex)
                         {
                             Log.e("TCP Client", "C: problems connecting! i=" + i + " ex=" + ex.getMessage());
-                            if (i+1 == maxTrials)
+                            if (i + 1 == maxTrials)
                                 throw ex;
                             socket.close();
-                            Thread.sleep((i+1)*25);
+                            Thread.sleep((i + 1) * 25);
                             socket = new Socket();
                             socket.setSoTimeout(connectionTimeout);
                         }

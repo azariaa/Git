@@ -27,7 +27,7 @@ public class LogicController
     TCPClient tcpClient;
     AudioStreamer audioStreamer;
 
-    String tcpIpAddr = "128.2.213.163";
+    String tcpIpAddr = "34.193.23.122";
     int tcpIpPort = Consts.serverPort;
     String udpIpAddr;
     int udpIpPort;
@@ -84,7 +84,7 @@ public class LogicController
                 //here the messageReceived method is implemented
                 public void messageReceived(String message)
                 {
-                    dealWithMessage(message); //TODO: make sure that runs on original thread. (avoid multithread unsafe access).
+                    dealWithMessage(message); //TODO: make sure that runs on same thread. (avoid multithread unsafe access).
                     //publishProgress(message);//this method calls the onProgressUpdate
                 }
             });
