@@ -18,6 +18,7 @@ public class TCPClient
     static TCPClient singleton = null;
 
     static final int connectionTimeout = 1000; // in milliseconds
+    static final int maxWaitForConnectionTimeout = 40; //will wait upto maxWaitForConnectionTimeout * connectionTimeout
 
     String ipAddr;
     int portNum;
@@ -256,9 +257,9 @@ public class TCPClient
                         }
                         catch (Exception ex)
                         {
-                            Log.d("TCP Client", "C: Didn't receive a message exception:" + ex.toString());
+                            Log.d("TCP Client", "C: Didn't receive a message exception receiveExceptionCount:" + receiveExceptionCount + " of maxWaitForConnectionTimeout:" + maxWaitForConnectionTimeout + " exception:"+ ex.toString());
                             receiveExceptionCount++;
-                            if (receiveExceptionCount >= 5)
+                            if (receiveExceptionCount >= maxWaitForConnectionTimeout)
                             {
                                 mRun = false;
                                 closeConnection();

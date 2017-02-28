@@ -1,6 +1,0 @@
-conditions,pattern,Say,Set
-,goodbye|exit|quit|stop,Goodbye!,"state=""finish"""
-"state=""getEmail""","(^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$)",Thanks. And what is your password? (Please type it in as well),"state=""getPassword"";email=""%1"";dontRenew=""true"""
-"state=""getEmail""",.*,This doesn't look like an email address to me. Please correct.,"dontRenew=""true"""
-"state=""getPassword""",(.*),,"state=""has"";password=""%1"";callfun=""saveEmailPassword"";dontRenew=""true"""
-,.*,,"callfun=""toInstructable"";dontRenew=""true"""

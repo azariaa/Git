@@ -1,4 +1,4 @@
-package InMind.DialogFunctions;
+package InMind.Server;
 
 import com.sun.deploy.net.URLEncoder;
 import com.sun.net.httpserver.HttpExchange;
@@ -29,8 +29,8 @@ public class dialogUtils
     {
         HttpClient httpClient = HttpClientBuilder.create().build(); //Use this instead
 
-        try
-        {
+//        try
+//        {
             HttpPost request = new HttpPost(url);
             if (isJsonFormat)
                 request.addHeader("Content-Type","application/json");//request.addHeader("Content-Type","text/plain");//"content-type", "application/x-www-form-urlencoded");
@@ -110,13 +110,13 @@ public class dialogUtils
 //            in.close();
 
             // handle response here...
-        } catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
+//        } catch (Exception ex)
+//        {
+//            //ex.printStackTrace();
+//        }
 
         //return response.toString();
-        return "";
+        //return "";
     }
 
 //    static String convertStreamToString(java.io.InputStream is)

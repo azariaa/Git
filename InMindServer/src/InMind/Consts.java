@@ -44,4 +44,5 @@ public class Consts
     //from instructable server
     public static final String execCmdPre = "execCmd:";
     static public final String demonstrateStr = "demonstrate:";
+    static public final String getEmailAndPassword = "getEmailAndPassword:";
 }

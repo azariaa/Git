@@ -1,6 +1,0 @@
-conditions,pattern,Say,Set
-"state=""start""",.*,Who is there?,"state=""get_who"""
-,goodbye|exit|quit|stop,Goodbye!,"state=""finish"""
-"state=""get_who""",(.*),%1 who?,"state=""get_end"""
-"state=""get_end""",(.*),"Sorry, my laughter is yet to be implemented :)","state=""finish"""
-,.*,,"state=""return"""

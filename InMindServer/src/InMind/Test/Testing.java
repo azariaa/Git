@@ -1,6 +1,6 @@
 package InMind.Test;
 
-import InMind.DialogFunctions.dialogUtils;
+import InMind.Server.dialogUtils;
 
 import java.util.HashMap;
 import java.util.Map;

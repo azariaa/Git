@@ -1,8 +1,0 @@
-conditions,pattern,Say,Set
-"state=""start""",.*,o.k. Guess my number,"myNum=Math.floor(Math.random() * 100) + 1;state=""guessing"""
-,goodbye|exit|quit|stop|I had enough|I give up,o.k. Goodbye!,"state=""finish"""
-myNum=%1,(?:is it |how about |maybe |the number )?(\d+),You got it! Well done!,"state=""finish"""
-myNum>%1,(?:is it |how about |maybe |the number )?(\d+),"No, it's larger!",
-myNum<%1,(?:is it |how about |maybe |the number )?(\d+),"No, it's smaller!",
-,(.*),I did not understand why you said: %1. You can tell me if you had enough.,
-,.*,,"state=""return"""

@@ -1,4 +1,0 @@
-conditions,pattern,Say,Set
-,goodbye|exit|quit|stop,Goodbye!,"state=""finish"";callfun=""endCrowd"""
-"state=""start""",.*,,"state=""progress"";callfun=""initiateCrowd"";dontClose=""true"""
-"state=""progress""",.*,,"callfun=""forwardToCrowdRule"";dontClose=""true"""
