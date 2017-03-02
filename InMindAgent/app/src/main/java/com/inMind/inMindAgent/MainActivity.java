@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
     //ArrayAdapter<String> chatAdapter;
     ListViewCustomAdapter<String> chatAdapter;
 
-    private Handler userNotifierHandler, talkHandler, launchHandler, ttsCompleteHandler; // TODO: should
+    public Handler userNotifierHandler, talkHandler, launchHandler, ttsCompleteHandler; // TODO: should
     // these all be
     // combined to
     // one handler?
@@ -258,38 +258,54 @@ public class MainActivity extends AppCompatActivity
                     Log.d("handleMessage", "start: " + sugiliteArgs[0] + " " + sugiliteArgs[1]);
                     //Sugilite requires screen to be on in order to operate
                     turnOnScreen();
-                    if (sugiliteArgs[0].equalsIgnoreCase(Consts.sugiliteStartRecording))
+                    try
                     {
-                        Log.d("handleMessage", "starting new recording named: " + sugiliteArgs[1]);
-                        Intent intent = new Intent("edu.cmu.hcii.sugilite.COMMUNICATION");
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("messageType", "START_RECORDING");
-                        intent.putExtra("arg1"/*"scriptName"*/, sugiliteArgs[1]);
-                        intent.putExtra("arg2"/*"callbackString"*/, "android.intent.action.ComWithSugilite");
-                        MainActivity.this.startActivityForResult(intent, 1);
+                        if (sugiliteArgs[0].equalsIgnoreCase(Consts.sugiliteStartRecording))
+                        {
+                            Log.d("handleMessage", "starting new recording named: " + sugiliteArgs[1]);
+                            Intent intent = new Intent("edu.cmu.hcii.sugilite.COMMUNICATION");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.putExtra("messageType", "START_RECORDING");
+                            intent.putExtra("arg1"/*"scriptName"*/, sugiliteArgs[1]);
+                            intent.putExtra("arg2"/*"callbackString"*/, "android.intent.action.ComWithSugilite");
+                            MainActivity.this.startActivityForResult(intent, 1);
+                        }
+                        else if (sugiliteArgs[0].equalsIgnoreCase(Consts.sugiliteRun))
+                        {
+                            Log.d("handleMessage", "running script named: " + sugiliteArgs[1]);
+                            Intent intent = new Intent("edu.cmu.hcii.sugilite.COMMUNICATION");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.putExtra("messageType", "RUN_SCRIPT");
+                            intent.putExtra("scriptName", sugiliteArgs[1]);
+                            MainActivity.this.startActivityForResult(intent, 1);
+                        }
+                        else if (sugiliteArgs[0].equalsIgnoreCase(Consts.sugiliteExecJson))
+                        {
+                            Log.d("handleMessage", "running script using json");
+                            Log.d("handleMessage", "json: " + sugiliteArgs[1]);
+                            Intent intent = new Intent("edu.cmu.hcii.sugilite.COMMUNICATION");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.putExtra("messageType", "RUN_JSON");
+                            intent.putExtra("arg1"/*JSON*/, sugiliteArgs[1]);
+                            intent.putExtra("arg2"/*callbackString*/, "android.intent.action.ComWithSugilite");
+                            MainActivity.this.startActivityForResult(intent, 1);
+                        }
+
                     }
-                    else if (sugiliteArgs[0].equalsIgnoreCase(Consts.sugiliteRun))
+                    catch (Exception e)
                     {
-                        Log.d("handleMessage", "running script named: " + sugiliteArgs[1]);
-                        Intent intent = new Intent("edu.cmu.hcii.sugilite.COMMUNICATION");
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("messageType", "RUN_SCRIPT");
-                        intent.putExtra("scriptName", sugiliteArgs[1]);
-                        MainActivity.this.startActivityForResult(intent, 1);
-                    }
-                    else if (sugiliteArgs[0].equalsIgnoreCase(Consts.sugiliteExecJson))
-                    {
-                        Log.d("handleMessage", "running script using json");
-                        Log.d("handleMessage", "json: " + sugiliteArgs[1]);
-                        Intent intent = new Intent("edu.cmu.hcii.sugilite.COMMUNICATION");
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("messageType", "RUN_JSON");
-                        intent.putExtra("arg1"/*JSON*/, sugiliteArgs[1]);
-                        intent.putExtra("arg2"/*callbackString*/, ""); //TODO: add callback
-                        MainActivity.this.startActivityForResult(intent, 1);
+                        String toSay = "Can't launch Sugilite ";
+                        Log.w("MainAtivity", "can't launch Sugilite");
+                        if (e instanceof android.content.ActivityNotFoundException)
+                            toSay += ", this is most likely because Sugilite is not installed, please install Sugilite.";
+                        Log.d("MainAtivity", "saying: " + toSay);
+                        Message msgTalk = new Message();
+                        msgTalk.arg1 = 3; //say aloud and toast
+                        msgTalk.obj = toSay;
+                        talkHandler.sendMessage(msgTalk);
                     }
                 }
                 return false;
