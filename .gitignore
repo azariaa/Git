@@ -97,3 +97,6 @@ InMindAgent/app/build/
 InMindAgent/.idea/
 InMindAgent/.gradle/
 InMindServer/logging/inmindServer.log.lck
+LIAextension/.idea/
+LIAextension/gradlew
+LIAextension/gradle/
