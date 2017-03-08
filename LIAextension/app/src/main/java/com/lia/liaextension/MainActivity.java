@@ -200,12 +200,20 @@ public class MainActivity extends Activity
                 alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
             else
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
+            clearTexts();
             readAlarm(alarmIntent, true);
         }
         catch (Exception e)
         {
             Log.e("MainActivity", "Error during setting alarm: " + e.getMessage());
         }
+    }
+
+    private void clearTexts()
+    {
+        alarmTimeText.setText("");
+        timerTimeText.setText("");
     }
 
     Date parseDateTime(String dateString, boolean isTimer)
