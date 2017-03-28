@@ -140,7 +140,10 @@ public class ASR
                 JSONObject result = results.getJSONObject(i);
                 if (i == 0)
                 {
-                    res.text = result.getString("transcript");
+                    String bestResult = result.getString("transcript");
+                    //remove agentName
+                    String regex = "\\s*\\b"+Consts.agentNameKeyword+"\\b\\s*";
+                    res.text = bestResult.replaceAll(regex, "");
                     if (result.has("confidence"))
                         res.confidence = result.getDouble("confidence");
                 }

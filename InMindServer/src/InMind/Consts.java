@@ -29,6 +29,9 @@ public class Consts
     static public final String sugiliteStartRecording = "startrec"; //e.g. Sugilite^startrec^script name
     //static public final String sugiliteRun = "run"; //e.g. Sugilite^run^script name
     static public final String sugiliteExecJson = "sugExecJson"; //e.g.Sugilite^execJson^{{"variables":{},"nextBlock":{"actionType":"CLICK","childTexts":["Contacts"]}}
+    public static final String youTube = "YouTube"; //e.g. YouTube^FD23424+dfs3
+
+    static public final String agentNameKeyword = "exclamation";//agent name is removed from ASR result
 
     //client requests must start with user Id. e.g., userId^SendingText^text
     static public final String clientMessagePattern = "([-a-zA-Z0-9]+)"+Consts.messageSeparatorForPattern+"(\\p{Alpha}*)"+Consts.messageSeparatorForPattern+"(.*)";
@@ -37,12 +40,9 @@ public class Consts
     static public final String sendingText = "SendingText";
     static public final String sendingCommand = "SendingCommand";
 
-    //connections to other servers
-    static public final String asrStr = "ASR";
-    static public final String asrCancel = "cancel";
-
     //from instructable server
     public static final String execCmdPre = "execCmd:";
     static public final String demonstrateStr = "demonstrate:";
+    static public final String playYouTubeStr = "playYouTube:";
     static public final String getEmailAndPassword = "getEmailAndPassword:";
 }

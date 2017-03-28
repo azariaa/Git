@@ -77,7 +77,9 @@ public class ToInstructable
                 {
                     return dealWithEmailAndPassword(true, userText /*shouldn't really matter here*/);
                 }
-                if (sentence.startsWith(Consts.execCmdPre) || sentence.startsWith(Consts.demonstrateStr))
+                if (sentence.startsWith(Consts.execCmdPre) ||
+                        sentence.startsWith(Consts.demonstrateStr) ||
+                        sentence.startsWith(Consts.playYouTubeStr))
                 {
                     if (sentence.startsWith(Consts.execCmdPre))
                     {
@@ -88,13 +90,21 @@ public class ToInstructable
                         if (res.length == 1) //only if this is the only command being executed we say "Executing". This is to enable the user to define what should be said (e.g. say ordering cappuccino)
                             commands.add(sayWithCom + "Executing."); //cannot add script name, since there may be different scripts combined, and there also may be no script name
                     }
-                    else
+                    else if (sentence.startsWith(Consts.demonstrateStr))
                     {
                         String scriptName = sentence.substring(Consts.demonstrateStr.length()).trim();
                         String exeCommand = Consts.sugilite + Consts.commandChar;
                         exeCommand += Consts.sugiliteStartRecording + Consts.commandChar + scriptName;
                         commands.add(exeCommand);
                         commands.add(sayWithCom + "Show me how to " + scriptName + "! Once you are done click on the duck and select end recording.");
+                    }
+                    else
+                    {
+                        String videoId = sentence.substring(Consts.playYouTubeStr.length()).trim();
+                        String exeCommand = Consts.youTube + Consts.commandChar;
+                        exeCommand += videoId;
+                        commands.add(exeCommand);
+                        commands.add(sayWithCom + "Playing...");
                     }
                 }
                 else

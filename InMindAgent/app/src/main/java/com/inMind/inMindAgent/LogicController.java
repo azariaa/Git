@@ -130,6 +130,7 @@ public class LogicController
 
     private void dealWithMessage(String message)
     {
+        //TODO: all this can be written better with a 'switch' and with an object holding the action and the arguments together.
         Log.d("ServerConnector", "Dealing with message:" + message);
         Pattern p = Pattern.compile(Consts.serverMessagePattern);
         Matcher m = p.matcher(message);
@@ -199,6 +200,14 @@ public class LogicController
                 Log.d("ServerConnector", "Sugilite message:" + m.group(2));
                 Message msgLaunch = new Message();
                 msgLaunch.arg1 = 2;
+                msgLaunch.obj = m.group(2).trim();
+                launchHandler.sendMessage(msgLaunch);
+            }
+            else if (m.group(1).equalsIgnoreCase(Consts.youTube))
+            {
+                Log.d("ServerConnector", "Play youtube message:" + m.group(2));
+                Message msgLaunch = new Message();
+                msgLaunch.arg1 = 3;
                 msgLaunch.obj = m.group(2).trim();
                 launchHandler.sendMessage(msgLaunch);
             }

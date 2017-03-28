@@ -1,5 +1,7 @@
 package com.inMind.inMindAgent;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -23,15 +25,28 @@ public class ScreenOn extends AppCompatActivity
 //                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                         | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
+        Intent intent = getIntent();
+        final String launchAfterScreenOn = intent.getStringExtra("launchAfterScreenOn");
+        final String arg = intent.getStringExtra("arg");
         Thread finishWithDelay = new Thread(new Runnable() {
             @Override
             public void run(){
                 try
                 {
-                    Thread.sleep(3000);
+                    Thread.sleep(2000);
                 }
                 catch (Exception ignored)
                 {
+                }
+                if (launchAfterScreenOn.equals("YouTube"))
+                {
+                    String videoId = arg;
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + videoId));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("VIDEO_ID", videoId);
+                    startActivity(intent);
+
                 }
                 finish();
             }

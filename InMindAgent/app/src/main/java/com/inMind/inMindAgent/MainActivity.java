@@ -11,6 +11,7 @@ import InMind.simpleUtils;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -308,6 +309,21 @@ public class MainActivity extends AppCompatActivity
                         talkHandler.sendMessage(msgTalk);
                     }
                 }
+                else if (msg.arg1 == 3) //youtube
+                {
+                    Log.d("handleMessage", "openning YouTube");
+                    String videoId = msg.obj.toString();
+                    Log.d("handleMessage", "videoId:" + videoId);
+                    //YouTube requires screen to be on to work.
+                    //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/" + videoId)));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("VIDEO_ID", videoId);
+                    startActivity(intent);
+                    turnOnScreen("YouTube", videoId);
+
+                }
                 return false;
             }
         });
@@ -429,7 +445,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void commandDetected()
                 {
-                    // TODO Auto-generated method stub
+                    bringToForegroundAndTurnOnScreen();
                     connectAudioToServer();
                 }
             }, this);
@@ -456,8 +472,38 @@ public class MainActivity extends AppCompatActivity
         Log.d("Main", "onCreate-End");
     }
 
+    private void bringToForegroundAndTurnOnScreen()
+    {
+        bringApplicationToFront();
+        turnOnScreen();
+    }
+
+    private void bringApplicationToFront()
+    {
+
+        Log.d("MainActivity", "====Bringging Application to Front====");
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        try
+        {
+            pendingIntent.send();
+        }
+        catch (PendingIntent.CanceledException e)
+        {
+            Log.e("MainActivity", "PendingIntent.CanceledException while Bringging Application to Front");
+        }
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
     private void turnOnScreen()
+    {
+        turnOnScreen("", "");
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
+    private void turnOnScreen(String launchAfterScreenOn, String arg)
     {
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1)
             return;
@@ -472,6 +518,8 @@ public class MainActivity extends AppCompatActivity
                     Intent intent = new Intent(this, ScreenOn.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("launchAfterScreenOn", launchAfterScreenOn);
+                    intent.putExtra("arg", arg);
                     MainActivity.this.startActivityForResult(intent, 1);
                     break;
                 }
