@@ -12,7 +12,7 @@ public class SimpleSignalInfoProvider extends ASignalInfoProvider
     int bytesSilentAtEnd = 0;
     int bytesTalkAtCurrentSample = 0;
     int bytesTotalTalkLength = 0;
-    double totalTimeFromStart = 0;
+    double totalTimeFromStart = 0; //not in use?
 
 
     //final int silentLengthNeeded = 500;  //in milliseconds

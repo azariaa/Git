@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
     LogicController logicController;
     InMindCommandListener inmindCommandListener;
 
-    private ImageButton startButton, startFromCircle;
+    private ImageButton startButton, startFromCircle, stopKeyword;
     private Button stopButton;
     private ListView chatView;
     EditText editText;
@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity
     // these all be
     // combined to
     // one handler?
-    //private Handler clearScreenFlags;
     private LogicController.syncNotifiers startStopRecNotifier;
 
     @Override
@@ -347,7 +346,7 @@ public class MainActivity extends AppCompatActivity
             {
                 if (start)
                     inmindCommandListener.stopListening();
-                else
+                else if (isKeywordWakeupOn)
                     inmindCommandListener.listenForInmindCommand();
             }
         };
@@ -454,11 +453,13 @@ public class MainActivity extends AppCompatActivity
 
         startButton = (ImageButton) findViewById(R.id.button_rec);
         startFromCircle = (ImageButton) findViewById(R.id.image_recording);
+        stopKeyword = (ImageButton) findViewById(R.id.listen_keyword);
         stopButton = (Button) findViewById(R.id.button_stop);
 
         startButton.setOnClickListener(startListener);
         startFromCircle.setOnClickListener(startListener);
         stopButton.setOnClickListener(stopListener);
+
 
         chatView = (ListView) findViewById(R.id.listView);
         chatAdapter = new ListViewCustomAdapter<String>(this, android.R.layout.simple_list_item_1, chatArray);
@@ -722,24 +723,6 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onClick(View arg0)
         {
-            ////ignore.... debug!!! remove this!!!
-//            Log.d("InMind stop button", "running script using json by stop!!! remove!!!!");
-//            Intent intent = new Intent("edu.cmu.hcii.sugilite.COMMUNICATION");
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            intent.putExtra("messageType", "RUN_JSON");
-//            intent.putExtra("arg1"/*JSON*/, "{\"nextBlock\":{\"actionType\":\"CLICK\",\"filter\":{\"text\":\"Contacts\"}}}");
-//            intent.putExtra("arg2"/*callbackString*/, "");
-//            MainActivity.this.startActivityForResult(intent, 1);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-//            try {
-//                startActivity(intent);
-//            }
-//            catch (Exception e){
-//                Log.e("InMind sendCallbackMsg", "exception while callingback");
-//                Log.e("InMind sendCallbackMsg", "exception while callingback" + e.getMessage());
-//            }
-            //////////////////////
             Log.d("Main", "Stop Clicked");
             // audioStreamer.stopStreaming();
             logicController.stopStreaming();
@@ -761,12 +744,30 @@ public class MainActivity extends AppCompatActivity
 
     };
 
+    boolean isKeywordWakeupOn = true;
+
+    public void toggleListenKeyword(View view)
+    {
+        if (isKeywordWakeupOn)
+        {
+            stopKeyword.setImageResource(R.drawable.start_listening_keyword);
+            inmindCommandListener.stopListening();
+        }
+        else
+        {
+            stopKeyword.setImageResource(R.drawable.stop_listening_keyword);
+            inmindCommandListener.listenForInmindCommand();
+        }
+        isKeywordWakeupOn = !isKeywordWakeupOn;
+    }
+
 
     @Override
     public void onDestroy()
     {
         logicController.stopStreaming();
         inmindCommandListener.stopListening();
+        ttsCont.close();
         //MessageBroker.getInstance(this).destroy();
         super.onDestroy();
     }

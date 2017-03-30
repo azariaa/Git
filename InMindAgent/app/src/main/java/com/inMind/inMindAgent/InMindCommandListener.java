@@ -18,6 +18,12 @@ public class InMindCommandListener
     InmindCommandInterface minmindCommandInterface;
     Context context;
     PocketSphinxSearcher pocketSphinxSearcher = null;
+
+    public boolean listeningForCommand()
+    {
+        return isListeningForCommand;
+    }
+
     boolean isListeningForCommand = false;
 
     InMindCommandListener(InmindCommandInterface inmindCommandInterface, final Context context)

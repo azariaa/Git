@@ -76,6 +76,11 @@ public class TTScontroller
             ttobj = new TextToSpeech(appContext, listener);
     }
 
+    public void close()
+    {
+        ttobj.shutdown();
+    }
+
     @SuppressWarnings("deprecation")
     public void speakThis(String message)
     {
