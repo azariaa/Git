@@ -1,2 +1,2 @@
 //include ':middleware', ':app'
-include ':app'
+include ':app', ':pocketsphinx-android-5prealpha-release'

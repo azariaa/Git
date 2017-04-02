@@ -1,7 +1,6 @@
 package com.inMind.pocketSphinxBridge;
 
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -37,14 +36,17 @@ public class PocketSphinxSearcher {
 		
 		public void testRes(Hypothesis hypothesis)
 		{
-	        String text = hypothesis.getHypstr();
-	        if (text.equals(keyPhrase) && sphinxRes!= null)
-	        {
-	        	recognizer.stop(); //must stop and start to restart. otherwise will keep getting text.equals(keyPhrase)
-                recognizer.startListening(KWS_SEARCH);
-                Log.d("Sphinx", "keyword detected.");
-	            sphinxRes.keyDetected();
-	        }
+            if (hypothesis != null)
+            {
+                String text = hypothesis.getHypstr();
+                if (text.equals(keyPhrase) && sphinxRes != null)
+                {
+                    recognizer.stop(); //must stop and start to restart. otherwise will keep getting text.equals(keyPhrase)
+                    recognizer.startListening(KWS_SEARCH);
+                    Log.d("Sphinx", "keyword detected.");
+                    sphinxRes.keyDetected();
+                }
+            }
 		}
 
 	    @Override
@@ -57,7 +59,19 @@ public class PocketSphinxSearcher {
 	    	//testRes(hypothesis);
 	    }
 
-	    @Override
+        @Override
+        public void onError(Exception e)
+        {
+
+        }
+
+        @Override
+        public void onTimeout()
+        {
+
+        }
+
+        @Override
 	    public void onBeginningOfSpeech() {
 	    }
 
@@ -151,11 +165,19 @@ public class PocketSphinxSearcher {
     private void setupRecognizer(File assetsDir)
     {
         File modelsDir = new File(assetsDir, "models");
-        recognizer = defaultSetup()
-                .setAcousticModel(new File(modelsDir, "hmm/en-us-semi"))
-                .setDictionary(new File(modelsDir, "dict/cmu07a.dic"))
-                .setRawLogDir(assetsDir).setKeywordThreshold(1e-45f)//(1e-20f)
-                .getRecognizer();
+        try
+        {
+            recognizer = defaultSetup()
+                    .setAcousticModel(new File(modelsDir, "hmm/en-us-semi"))
+                    .setDictionary(new File(modelsDir, "dict/cmu07a.dic"))
+                    .setFloat("-kws_threshold", 1e-70)//.setKeywordThreshold(1e-45f)//(1e-45f)//(1e-20f)
+                    //.setRawLogDir(assetsDir) //takes a lot of space on phone (and also time?)
+                    .getRecognizer();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
         recognizer.addListener(new MyListener(sphinxRes, keyPhrase));
 
         // Create keyword-activation search.

@@ -2,6 +2,13 @@
 <items version="2" >
 
     <item
+        jar="C:\InMind\Git\InMindAgent\app\build\intermediates\exploded-aar\InMindAgent\pocketsphinx-android-5prealpha-release\unspecified\jars\classes.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="6849e24d764fc75a3df80f7c1e39196c885c4f8b">
+        <dex dex="C:\InMind\Git\InMindAgent\app\build\intermediates\pre-dexed\debug\classes-776bc4f1aaa7cae3b85aa5308889106ec167bd5b.jar" />
+    </item>
+    <item
         jar="C:\InMind\Git\InMindAgent\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\jars\libs\internal_impl-22.2.0.jar"
         jumboMode="false"
         revision="22.0.1"
@@ -16,13 +23,6 @@
         <dex dex="C:\InMind\Git\InMindAgent\app\build\intermediates\pre-dexed\debug\support-annotations-22.2.0-a24fef54322938cc0cdeb61fffd6720e2b0c121d.jar" />
     </item>
     <item
-        jar="C:\InMind\Git\InMindAgent\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.0\jars\classes.jar"
-        jumboMode="false"
-        revision="22.0.1"
-        sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
-        <dex dex="C:\InMind\Git\InMindAgent\app\build\intermediates\pre-dexed\debug\classes-3e1965cf8bbfe5a89f62916fc0632be55d68a9d7.jar" />
-    </item>
-    <item
         jar="C:\InMind\Git\InMindAgent\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\jars\classes.jar"
         jumboMode="false"
         revision="22.0.1"
@@ -30,11 +30,11 @@
         <dex dex="C:\InMind\Git\InMindAgent\app\build\intermediates\pre-dexed\debug\classes-9638ba06043584d54f44f4e1d06ab556ecb12fd5.jar" />
     </item>
     <item
-        jar="C:\InMind\Git\InMindAgent\app\libs\pocketsphinx-android-0.8-nolib.jar"
+        jar="C:\InMind\Git\InMindAgent\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.0\jars\classes.jar"
         jumboMode="false"
         revision="22.0.1"
-        sha1="79e72ad97c6001aa89f3a250970615d92eb05fb8">
-        <dex dex="C:\InMind\Git\InMindAgent\app\build\intermediates\pre-dexed\debug\pocketsphinx-android-0.8-nolib-fdbe7e271c8af0db40dfee842b6e240a785032dc.jar" />
+        sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
+        <dex dex="C:\InMind\Git\InMindAgent\app\build\intermediates\pre-dexed\debug\classes-3e1965cf8bbfe5a89f62916fc0632be55d68a9d7.jar" />
     </item>
 
 </items>
