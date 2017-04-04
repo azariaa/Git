@@ -28,16 +28,18 @@ public class SimpleSignalInfoProvider extends ASignalInfoProvider
 
     double considerSilent()
     {
-        return Math.min(minimalSoundSumUntilNow * factorOnLowest + addForSilence, considerSpeech());
+        //return Math.min(minimalSoundSumUntilNow * factorOnLowest + addForSilence, considerSpeech());
+        return minimalSoundSumUntilNow * factorOnLowest + addForSilence;
     }
     double considerSpeech()
     {
-        return minimalSoundSumUntilNow + addForSpeech;
+        //return minimalSoundSumUntilNow + addForSpeech;
+        return considerSilent() + addForSpeech;
     }
 
-    final double factorOnLowest = 1.4; //consider silence upto this factor
+    final double factorOnLowest = 1.8;//1.4; //consider silence upto this factor
     final int lowPassFilterN = 500;
-    final int addForSpeech = 40 * lowPassFilterN;
+    final int addForSpeech = 30 * lowPassFilterN; //40
     final int addForSilence = 15 * lowPassFilterN;
     final int minimalSoundStartingPoint = 1000*lowPassFilterN;
     final int maximalSilenceAtEndToUpdateMin = 37;
@@ -97,9 +99,9 @@ public class SimpleSignalInfoProvider extends ASignalInfoProvider
             // don't start updating and counting sound until we filled-up our lowPassFilterN
             if (previousSound.size() >= lowPassFilterN)
             {
-                //update silence level, but only if didn't detect already a lot of silence.
-                if (previousSoundSum < minimalSoundSumUntilNow
-                        && bytesSilentAtEnd < maximalSilenceAtEndToUpdateMin)
+                //update silence level,
+                if (previousSoundSum < minimalSoundSumUntilNow)
+                        //&& bytesSilentAtEnd < maximalSilenceAtEndToUpdateMin) but only if didn't detect already a lot of silence.
                 {
                     minimalSoundSumUntilNow = previousSoundSum;
                 }

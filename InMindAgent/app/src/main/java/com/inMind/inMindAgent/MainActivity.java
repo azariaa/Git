@@ -49,6 +49,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 /**
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity
 
     private ImageButton startButton, startFromCircle, stopKeyword;
     private Button stopButton;
+    private RelativeLayout mainLayout;
     private ListView chatView;
     EditText editText;
     ArrayList<String> chatArray = new ArrayList<>();
@@ -102,56 +104,12 @@ public class MainActivity extends AppCompatActivity
                     toastWithTimer(toToast, important);
                     if (toToast.equals("Talk!")) //if needs to talk, set recording image. //TODO: should be done nicer (all strings should be refactorred).
                     {
-                        ((ImageView) findViewById(R.id.image_recording)).setImageResource(R.drawable.rec_recording);
-
-                        //turn on flashlight
-                        new Thread()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                try
-                                {
-                                    //in newer versions (23 and up) can use CameraManager.setTorchMode instead and no need for camera permission
-//                                    CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-//                                    String[] list = manager.getCameraIdList();
-//                                    manager.setTorchMode(list[0], true);
-
-                                    final Camera cam = Camera.open();
-                                    cam.setPreviewTexture(new SurfaceTexture(312)); //this line was added to support Android 6.0
-                                    Camera.Parameters p = cam.getParameters();
-                                    p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-                                    cam.setParameters(p);
-                                    cam.startPreview();
-
-                                    new Thread()
-                                    {
-                                        @Override
-                                        public void run()
-                                        {
-                                            try
-                                            {
-                                                sleep(10);
-                                                cam.stopPreview();
-                                                cam.release();
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    }.start();
-                                }
-                                catch (Exception e)
-                                {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }.start();
-
+                        guiTalk(true);
                     }
                     else
-                        ((ImageView) findViewById(R.id.image_recording)).setImageResource(R.drawable.not_recording);
+                    {
+                        guiTalk(false);
+                    }
                 }
                 else if (msg.arg1 == 2)
                 {
@@ -163,8 +121,69 @@ public class MainActivity extends AppCompatActivity
                     r.play();
                 }
                 else if (msg.arg1 == 0)
-                    ((ImageView) findViewById(R.id.image_recording)).setImageResource(R.drawable.not_recording); //just turn off recording image.
+                {
+                    guiTalk(false);
+                }
                 return false;
+            }
+
+            private void guiTalk(boolean talking)
+            {
+                if (talking)
+                {
+                    ((ImageView) findViewById(R.id.image_recording)).setImageResource(R.drawable.rec_recording);
+                    mainLayout.setBackgroundColor(0x778800DD);
+
+                    //turn on flashlight
+                    new Thread()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            try
+                            {
+                                //in newer versions (23 and up) can use CameraManager.setTorchMode instead and no need for camera permission
+//                                    CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+//                                    String[] list = manager.getCameraIdList();
+//                                    manager.setTorchMode(list[0], true);
+
+                                final Camera cam = Camera.open();
+                                cam.setPreviewTexture(new SurfaceTexture(312)); //this line was added to support Android 6.0
+                                Camera.Parameters p = cam.getParameters();
+                                p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                                cam.setParameters(p);
+                                cam.startPreview();
+
+                                new Thread()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        try
+                                        {
+                                            sleep(10);
+                                            cam.stopPreview();
+                                            cam.release();
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }.start();
+                            }
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                            }
+                        }
+                    }.start();
+                }
+                else
+                {
+                    ((ImageView) findViewById(R.id.image_recording)).setImageResource(R.drawable.not_recording);
+                    mainLayout.setBackgroundColor(0xFFFFFFFF);
+                }
             }
 
         });
@@ -455,6 +474,7 @@ public class MainActivity extends AppCompatActivity
         startFromCircle = (ImageButton) findViewById(R.id.image_recording);
         stopKeyword = (ImageButton) findViewById(R.id.listen_keyword);
         stopButton = (Button) findViewById(R.id.button_stop);
+        mainLayout = (RelativeLayout) findViewById(R.id.main_layout);
 
         startButton.setOnClickListener(startListener);
         startFromCircle.setOnClickListener(startListener);
