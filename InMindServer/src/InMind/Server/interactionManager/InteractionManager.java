@@ -12,13 +12,13 @@ public class InteractionManager extends AInteractionManager
         super(imRequiredAction);
     }
 
-    final double dMaxUttDuration = 10000;//30000;
+    final double dMaxUttDuration = 15000;//30000;
     final double dMinUttDuration = 500;//1000;
     //final double dActionThreshold = 300;
     //final double dListenThreshold = 1000;
-    final double dStopSpeakingThreshold = 250;//150;
+    final double dStopSpeakingThreshold = 320; //want to usually call Google only once, so increased required silence at end, was: 250;//150;
     final double dMinVadDuration = 200;
-    final double dMinAdditionalVad = 100000; //will practically go to Google only once and never cancel//100;
+    final double dMinAdditionalVad = 400; //will usually go to Google only once and not cancel// was: 100;
 
     enum InternalState {init, waitForASR, complete};
 

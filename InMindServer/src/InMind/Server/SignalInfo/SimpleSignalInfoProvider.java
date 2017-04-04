@@ -2,10 +2,16 @@ package InMind.Server.SignalInfo;
 
 import InMind.Consts;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * Created by Amos on 17-Feb-15.
  *
- * should be replaced by sphinx
+ * should be replaced by sphinx. Sphinx didn't work that well.
+ * Updated and works nicely!
+ * Applies a low-pass filter (moving average) of length lowPassFilterN.
+ * Tracks the minimal sound thus far and uses it as a guide to determine speech vs silence.
  */
 public class SimpleSignalInfoProvider extends ASignalInfoProvider
 {
@@ -16,10 +22,29 @@ public class SimpleSignalInfoProvider extends ASignalInfoProvider
 
 
     //final int silentLengthNeeded = 500;  //in milliseconds
-    final int considerSilent = 200;//500;//2500;
-    final int considerSpeech = 400;//1000;//3500;//3000;
+    //final int considerSilent = 100;//200;//500;//2500;
+    //final int considerSpeech = 200;//400;//1000;//3500;//3000;
     final int minimalTalk = Consts.sampleRate / 10000; //require at least 0.001 sec of speech
 
+    double considerSilent()
+    {
+        return Math.min(minimalSoundSumUntilNow * factorOnLowest + addForSilence, considerSpeech());
+    }
+    double considerSpeech()
+    {
+        return minimalSoundSumUntilNow + addForSpeech;
+    }
+
+    final double factorOnLowest = 1.4; //consider silence upto this factor
+    final int lowPassFilterN = 500;
+    final int addForSpeech = 40 * lowPassFilterN;
+    final int addForSilence = 15 * lowPassFilterN;
+    final int minimalSoundStartingPoint = 1000*lowPassFilterN;
+    final int maximalSilenceAtEndToUpdateMin = 37;
+
+    int minimalSoundSumUntilNow = minimalSoundStartingPoint;
+    Queue<Integer> previousSound;
+    int previousSoundSum = 0;
 
     @Override
     public void startNewStream()
@@ -28,6 +53,9 @@ public class SimpleSignalInfoProvider extends ASignalInfoProvider
         bytesTalkAtCurrentSample = 0;
         bytesTotalTalkLength = 0;
         totalTimeFromStart = 0;
+        previousSoundSum = 0;
+        minimalSoundSumUntilNow = minimalSoundStartingPoint;
+        previousSound = new LinkedList<>();
     }
 
     @Override
@@ -59,15 +87,33 @@ public class SimpleSignalInfoProvider extends ASignalInfoProvider
         for (int i = 0; 2 * i < currLength; i++)
         {
             short sample = (short) (currentSample[2 * i + 1] << 8 | currentSample[2 * i]); //little endian 16bit
-            if (Math.abs(sample) < considerSilent)
-                bytesSilentAtEnd++;
-            else
+
+            previousSound.add(Math.abs(sample));
+            previousSoundSum += Math.abs(sample);
+            if (previousSound.size() > lowPassFilterN)
             {
-                bytesSilentAtEnd = 0;
-                if (Math.abs(sample) > considerSpeech)
+                previousSoundSum -= previousSound.poll();
+            }
+            // don't start updating and counting sound until we filled-up our lowPassFilterN
+            if (previousSound.size() >= lowPassFilterN)
+            {
+                //update silence level, but only if didn't detect already a lot of silence.
+                if (previousSoundSum < minimalSoundSumUntilNow
+                        && bytesSilentAtEnd < maximalSilenceAtEndToUpdateMin)
                 {
-                    bytesTotalTalkLength++;
-                    bytesTalkAtCurrentSample++;
+                    minimalSoundSumUntilNow = previousSoundSum;
+                }
+
+                if (Math.abs(previousSoundSum) < considerSilent())
+                    bytesSilentAtEnd++;
+                else
+                {
+                    bytesSilentAtEnd = 0;
+                    if (Math.abs(previousSoundSum) > considerSpeech())
+                    {
+                        bytesTotalTalkLength++;
+                        bytesTalkAtCurrentSample++;
+                    }
                 }
             }
         }
