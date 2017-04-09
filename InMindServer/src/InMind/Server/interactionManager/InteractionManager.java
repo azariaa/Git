@@ -13,12 +13,13 @@ public class InteractionManager extends AInteractionManager
     }
 
     final double dMaxUttDuration = 15000;//30000;
-    final double dMinUttDuration = 500;//1000;
+    final double dMinUttDuration = 1200;//500;//1000;
     //final double dActionThreshold = 300;
     //final double dListenThreshold = 1000;
     final double dStopSpeakingThreshold = 320; //want to usually call Google only once, so increased required silence at end, was: 250;//150;
     final double dMinVadDuration = 200;
     final double dMinAdditionalVad = 400; //will usually go to Google only once and not cancel// was: 100;
+    final int maxGotoGoogle = 2;
 
     enum InternalState {init, waitForASR, complete};
 
@@ -26,6 +27,7 @@ public class InteractionManager extends AInteractionManager
     double dTotalVad = 0; //in milliseconds
     double dVadWhenInvokeASR = 0;
     InternalState internalState = InternalState.init;
+    int wentToGoogle = 0;
 
     @Override
     public void updatedAudioInfo(SimpleSignalInfoProvider.SignalInfo signalInfo)
@@ -43,7 +45,7 @@ public class InteractionManager extends AInteractionManager
         }
         else if(dTotalVad >= dVadWhenInvokeASR + dMinAdditionalVad) //if the user talked dMinAdditionalVad or more than when sent the ASR call, cancel call
         {
-            if (internalState == InternalState.waitForASR) //unless already complete (or there is no call, but that shouldn't happen)
+            if (internalState == InternalState.waitForASR && wentToGoogle <= maxGotoGoogle) //unless already complete (or there is no call, but that shouldn't happen)
             {
                 internalState = InternalState.init;
                 imRequiredAction.takeAction(ActionToTake.cancel);
@@ -58,6 +60,7 @@ public class InteractionManager extends AInteractionManager
             internalState = InternalState.waitForASR;
             dVadWhenInvokeASR = dTotalVad;
             imRequiredAction.takeAction(ActionToTake.goToGoogle);
+            wentToGoogle++;
         }
     }
 
@@ -73,6 +76,7 @@ public class InteractionManager extends AInteractionManager
         dTotalVad = 0; //in milliseconds
         dVadWhenInvokeASR = 0;
         internalState = InternalState.init;
+        wentToGoogle = 0;
     }
 
     @Override

@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     ((ImageView) findViewById(R.id.image_recording)).setImageResource(R.drawable.rec_recording);
                     mainLayout.setBackgroundColor(0x778800DD);
+                    ttsCont.stop();
 
                     //turn on flashlight
                     new Thread()
@@ -746,6 +747,7 @@ public class MainActivity extends AppCompatActivity
             Log.d("Main", "Stop Clicked");
             // audioStreamer.stopStreaming();
             logicController.stopStreaming();
+            ttsCont.stop();
             //inmindCommandListener.stopListening();
         }
 

@@ -76,6 +76,12 @@ public class TTScontroller
             ttobj = new TextToSpeech(appContext, listener);
     }
 
+    public void stop()
+    {
+        if (ttobj.isSpeaking())
+            ttobj.stop();
+    }
+
     public void close()
     {
         ttobj.shutdown();
