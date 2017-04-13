@@ -6,8 +6,7 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
+        android:title="@string/action_settings"/>
     <item android:id="@+id/action_toDesk" android:title="changeToDeskIp"></item>
     <item android:id="@+id/action_toLap" android:title="changeToLapIp"></item>
     <item android:id="@+id/action_changeIp" android:title="changeIp"></item>

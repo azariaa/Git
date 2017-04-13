@@ -34,6 +34,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.CharacterPickerDialog;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -43,6 +44,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -77,6 +79,9 @@ public class MainActivity extends AppCompatActivity
     // combined to
     // one handler?
     private LogicController.syncNotifiers startStopRecNotifier;
+
+    static final String userPrefix = "User: ";
+    static final String agentPrefix = "Agent: ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -210,7 +215,7 @@ public class MainActivity extends AppCompatActivity
 
                 String toSay = msg.obj.toString();
                 //chatView.setTextColor(Color.RED);
-                chatArray.add(((msg.arg2 == 2) ? "User: " : "Agent: ") + toSay);
+                chatArray.add(((msg.arg2 == 2) ? userPrefix : agentPrefix) + toSay);
                 chatAdapter.notifyDataSetChanged();
                 chatView.setSelection(chatAdapter.getCount() - 1);
 
@@ -486,6 +491,23 @@ public class MainActivity extends AppCompatActivity
         chatAdapter = new ListViewCustomAdapter<String>(this, android.R.layout.simple_list_item_1, chatArray);
         //chatAdapter = new ListViewCustomAdapter<String>(this, R.layout.chat_list_item, chatArray);
         chatView.setAdapter(chatAdapter);
+
+        chatView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l)
+            {
+                if (position >= 0 && chatView.getCount() > position)
+                {
+                    String selectedFromList = (chatView.getItemAtPosition(position)).toString();
+                    if (selectedFromList.startsWith(userPrefix))
+                        selectedFromList = selectedFromList.substring(userPrefix.length());
+                    else if (selectedFromList.startsWith(agentPrefix))
+                        selectedFromList = selectedFromList.substring(agentPrefix.length());
+                    editText.setText(selectedFromList);
+                }
+            }
+        });
 
         // minBufSize += 2048;
         // System.out.println("minBufSize: " + minBufSize);
