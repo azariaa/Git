@@ -155,7 +155,8 @@ public class InMindLogic
             }
             else
             {
-                tcpServer.sendMessage(Consts.sayCommand + Consts.commandChar + "I didn't hear anything.");
+                if (asrRes != null && asrRes.text != null && asrRes.text.isEmpty()) //if we got an empty response from google
+                    tcpServer.sendMessage(Consts.sayCommand + Consts.commandChar + "I didn't hear anything.");
                 //tcpServer.sendMessage(Consts.closeConnection + Consts.commandChar);
                 tcpServer.abandonClient();
             }
