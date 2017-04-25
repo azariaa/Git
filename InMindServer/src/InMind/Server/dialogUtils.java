@@ -2,12 +2,13 @@ package InMind.Server;
 
 import com.sun.deploy.net.URLEncoder;
 import com.sun.net.httpserver.HttpExchange;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -95,8 +96,11 @@ public class dialogUtils
                 System.out.println("S: error. (response code is: " + httpResponse.getStatusLine().getStatusCode() + ")");
             }
 
-            String response = new BasicResponseHandler().handleResponse(httpResponse);//httpResponse.getEntity().toString();
-            return response;
+        HttpEntity entity = httpResponse.getEntity();
+        String responseString = EntityUtils.toString(entity, "UTF-8");
+
+            //String response = new BasicResponseHandler().handleResponse(httpResponse);//httpResponse.getEntity().toString();
+            return responseString;
 //                    BufferedReader in = new BufferedReader(
 //                new InputStreamReader(con.getInputStream()));
 //            String inputLine;

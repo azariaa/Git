@@ -14,17 +14,17 @@ List of features:
 - defining new concepts (e.g. "define concept contact"), creating new fields (e.g. "a contact has an email") creating new instances (e.g. "John is a contact", "John's email is john@john2.com"), retrieving that information (e.g. "what is John's email").
 - forget all learned
 - email operations (read inbox emails, compose new emails): requires setting email and password
-- say something (especially useful when teaching new commands, e.g. Thank you, say you are welcome)
-- play YouTube videos/songs
-- Spell words
+- say something (especially useful when teaching new commands, e.g. "Thank you", "say you are welcome")
+- play YouTube videos/songs (e.g. "play strawberry fields")
+- News (e.g. "science news")
+- Factoid questions (e.g. "who is the president of the united states")
+- Spell words (e.g. "spell elephant")
 
 Under development:
-- News (e.g. "news on mars exploration") (under development)
 - Alarms (under development)
 - Timers (under development)
 - Current time.
 - Calculations (e.g. how much is twenty seven times forty three point two?) Inc. time calculations (under development)
-- Factoid questions (under development)
 - Weather (under development)
 
 
