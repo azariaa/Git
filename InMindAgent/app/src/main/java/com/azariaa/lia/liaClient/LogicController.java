@@ -1,9 +1,9 @@
-package com.inMind.inMindAgent;
+package com.azariaa.lia.liaClient;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import InMind.Consts;
+import com.azariaa.lia.Consts;
 
 import android.content.Context;
 import android.os.Handler;
@@ -208,6 +208,14 @@ public class LogicController
                 Log.d("ServerConnector", "Play youtube message:" + m.group(2));
                 Message msgLaunch = new Message();
                 msgLaunch.arg1 = 3;
+                msgLaunch.obj = m.group(2).trim();
+                launchHandler.sendMessage(msgLaunch);
+            }
+            else if (m.group(1).equalsIgnoreCase(Consts.timerFunctions))
+            {
+                Log.d("ServerConnector", "timeFunctions message:" + m.group(2));
+                Message msgLaunch = new Message();
+                msgLaunch.arg1 = 4;
                 msgLaunch.obj = m.group(2).trim();
                 launchHandler.sendMessage(msgLaunch);
             }

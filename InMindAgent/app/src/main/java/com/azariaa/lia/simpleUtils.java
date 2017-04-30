@@ -1,4 +1,4 @@
-package InMind;
+package com.azariaa.lia;
 
 import java.util.Date;
 

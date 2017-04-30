@@ -1,4 +1,4 @@
-package com.inMind.inMindAgent;
+package com.azariaa.lia.liaClient;
 
 import android.util.Log;
 
@@ -7,7 +7,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import InMind.Consts;
+import com.azariaa.lia.Consts;
 
 /**
  * Created by Amos Azaria on 01-Nov-14.

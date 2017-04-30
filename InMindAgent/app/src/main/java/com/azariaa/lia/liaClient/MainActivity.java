@@ -1,26 +1,26 @@
-package com.inMind.inMindAgent;
+package com.azariaa.lia.liaClient;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
-import com.inMind.inMindAgent.InMindCommandListener.InmindCommandInterface;
+import com.azariaa.lia.liaClient.InMindCommandListener.InmindCommandInterface;
 //import com.yahoo.inmind.comm.generic.control.MessageBroker;
 
-import InMind.Consts;
-import InMind.simpleUtils;
+import com.azariaa.lia.Consts;
+import com.azariaa.lia.simpleUtils;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.hardware.camera2.CameraManager;
 import android.hardware.display.DisplayManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -29,12 +29,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.CharacterPickerDialog;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -42,10 +40,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -53,6 +49,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import org.json.JSONObject;
 
 /**
  * Created by Amos Azaria on 31-Dec-14.
@@ -348,6 +346,11 @@ public class MainActivity extends AppCompatActivity
                     turnOnScreen("YouTube", videoId);
 
                 }
+                else if (msg.arg1 == 4) //timeFunctions
+                {
+                    Log.d("handleMessage", "timerFunctions");
+                    dealWithTimeMessage(msg.obj.toString());
+                }
                 return false;
             }
         });
@@ -514,6 +517,37 @@ public class MainActivity extends AppCompatActivity
 
         // attach a Message. set msg.arg to 1 and msg.obj to string for toast.
         Log.d("Main", "onCreate-End");
+    }
+
+    private void dealWithTimeMessage(String jsonStr)
+    {
+        try
+        {
+            JSONObject json = new JSONObject(jsonStr);
+            String type = json.getString("type");
+            if (type.equals("read"))
+            {
+                String whatToRead = json.getString("whatToRead");
+                Calendar now = Calendar.getInstance();
+                if (whatToRead.equals("currentTime"))
+                {
+                    SimpleDateFormat sdf = new SimpleDateFormat("h:mm aa", Locale.US);
+                    String currTime = sdf.format(now.getTime());
+                    ttsCont.speakThis("The time is: " + currTime);
+                }
+                else
+                {
+                    SimpleDateFormat sdf = new SimpleDateFormat("EEEE. MMM dd yyyy", Locale.US);
+                    String currTime = sdf.format(now.getTime());
+                    ttsCont.speakThis("Today is: " + currTime);
+                }
+            }
+
+        } catch (Exception ex)
+        {
+            Log.e("Main", "dealWithTimeMessage exception:" + ex.getMessage());
+        }
+
     }
 
     private void bringToForegroundAndTurnOnScreen()

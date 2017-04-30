@@ -39,6 +39,14 @@ public class MainActivity extends Activity
     SimpleDateFormat sdfForReadingAloud = new SimpleDateFormat("h:mm aa");
     public Handler speakHandler;
 
+    public void readTime(View view)
+    {
+        Calendar now = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("h:mm aa", Locale.US);
+        String currTime = sdf.format(now.getTime());
+        speakThis("The time is: " + currTime);
+    }
+
     class AlarmIntent
     {
         public AlarmIntent(boolean isATimer, PendingIntent pendingIntent, String toSay, boolean ringBell, Calendar alarmTime)
@@ -284,7 +292,7 @@ public class MainActivity extends Activity
         {
             if (alarmIntent.alarmTime.get(Calendar.DATE) == now.get(Calendar.DATE))
                 toSay += "Today ";
-            else if (alarmIntent.alarmTime.get(Calendar.DATE) == now.get(Calendar.DATE) + 1)
+            else if ((int)alarmIntent.alarmTime.get(Calendar.DATE) == (int)now.get(Calendar.DATE) + 1)
                 toSay += "Tomorrow ";
             else
                 toSay = "On " + alarmIntent.alarmTime.toString();

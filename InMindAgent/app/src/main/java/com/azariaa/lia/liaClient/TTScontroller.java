@@ -1,4 +1,4 @@
-package com.inMind.inMindAgent;
+package com.azariaa.lia.liaClient;
 
 import java.util.HashMap;
 import java.util.Locale;

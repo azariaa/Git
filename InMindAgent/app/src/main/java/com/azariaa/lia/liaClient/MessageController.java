@@ -1,4 +1,4 @@
-package com.inMind.inMindAgent;
+package com.azariaa.lia.liaClient;
 
 import android.os.Handler;
 import android.util.Log;
@@ -10,7 +10,7 @@ import android.util.Log;
 //import com.yahoo.inmind.commons.rules.control.DecisionRuleValidator;
 //import com.yahoo.inmind.commons.rules.model.DecisionRule;
 
-import InMind.Consts;
+import com.azariaa.lia.Consts;
 
 public class MessageController
 {

@@ -1,10 +1,8 @@
-package com.inMind.inMindAgent;
+package com.azariaa.lia.liaClient;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -15,7 +13,7 @@ import android.util.Log;
 
 //import com.yahoo.inmind.services.news.control.util.JsonUtil;
 
-import InMind.Consts;
+import com.azariaa.lia.Consts;
 
 /**
  * Created by Amos Azaria on 31-Dec-14.

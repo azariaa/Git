@@ -1,4 +1,4 @@
-package com.inMind.inMindAgent;
+package com.azariaa.lia.liaClient;
 
 import android.content.Intent;
 import android.net.Uri;

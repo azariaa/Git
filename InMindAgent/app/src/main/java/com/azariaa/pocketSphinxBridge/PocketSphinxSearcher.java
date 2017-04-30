@@ -1,4 +1,4 @@
-package com.inMind.pocketSphinxBridge;
+package com.azariaa.pocketSphinxBridge;
 
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 import java.io.File;

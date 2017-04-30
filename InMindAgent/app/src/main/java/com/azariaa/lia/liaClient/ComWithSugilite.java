@@ -1,12 +1,9 @@
-package com.inMind.inMindAgent;
+package com.azariaa.lia.liaClient;
 
 import android.app.Activity;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-
-import InMind.Consts;
 
 public class ComWithSugilite extends Activity
 {

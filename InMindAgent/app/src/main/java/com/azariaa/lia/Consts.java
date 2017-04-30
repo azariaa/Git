@@ -1,4 +1,4 @@
-package InMind;
+package com.azariaa.lia;
 
 /**
  * Created by Amos Azaria on 24-Dec-14.
@@ -25,6 +25,13 @@ public class Consts
     static public final String sugiliteRun = "run"; //e.g. Sugilite^run^script name
     static public final String sugiliteExecJson = "sugExecJson"; //e.g.Sugilite^execJson^{{"variables":{},"nextBlock":{"actionType":"CLICK","childTexts":["Contacts"]}}
     public static final String youTube = "YouTube"; //e.g. YouTube^FD23424+dfs3
+    public static final String timerFunctions = "timerFunctions"; //e.g. timeFunctions^{type:"alarm", time:"2017-05-22 17:34:20", say:"get off the computer"}
+//    public static final String timeAlarm = "alarm"; //e.g. timeFunctions^alarm^
+//    public static final String timeTimer = "timer"; //e.g. timeFunctions^timer^1:23:00
+//    public static final String timeReadAll = "readAll"; //e.g. timerFunctions^readAll
+//    public static final String timeCancelAll = "cancelAll"; //e.g. timerFunctions^cancelAll
+//    public static final String timeReadTime = "readTime"; //e.g. timerFunctions^readTime
+//    public static final String timeReadDate = "readDate"; //e.g. timerFunctions^readDate
 
 
     static public final String startNewConnection = "StartNewConnection";

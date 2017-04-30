@@ -1,11 +1,11 @@
-package com.inMind.inMindAgent;
+package com.azariaa.lia.liaClient;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.inMind.pocketSphinxBridge.PocketSphinxSearcher;
+import com.azariaa.pocketSphinxBridge.PocketSphinxSearcher;
 
-import InMind.Consts;
+import com.azariaa.lia.Consts;
 
 public class InMindCommandListener
 {

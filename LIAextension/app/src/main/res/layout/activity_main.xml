@@ -96,5 +96,14 @@
         android:contentDescription="Delete All Alarms"
         android:onClick="onDeleteAllClicked" />
 
+    <Button
+        android:id="@+id/readTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/setAlarm"
+        android:onClick="readTime"
+        android:text="Time"/>
+
 
 </RelativeLayout>

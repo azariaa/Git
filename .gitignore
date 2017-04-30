@@ -128,3 +128,5 @@ InMindAgent/build/android-profile/profile-2017-04-13-13-30-50-649.rawproto
 InMindAgent/build/android-profile/profile-2017-04-20-11-14-25-838.rawproto
 InMindServer/.idea/kotlinc.xml
 InMindAgent/build/android-profile/
+InMindAgent/app/app-release.apk
+InMindAgent/build/generated/mockable-android-25.jar

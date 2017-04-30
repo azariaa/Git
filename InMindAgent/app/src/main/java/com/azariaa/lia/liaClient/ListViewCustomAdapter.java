@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-        package com.inMind.inMindAgent;
+        package com.azariaa.lia.liaClient;
 
         import android.content.Context;
         import android.content.res.Resources;

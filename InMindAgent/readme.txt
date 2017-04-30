@@ -21,12 +21,12 @@ List of features:
 - Spell words (e.g. "spell elephant")
 
 Under development:
-- Alarms (under development)
 - Timers (under development)
+- Alarms (under development)
 - Current time.
 - Calculations (e.g. how much is twenty seven times forty three point two?) Inc. time calculations (under development)
 - Weather (under development)
-
+- Conditional execution (under development)
 
 
 

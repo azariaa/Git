@@ -79,7 +79,8 @@ public class ToInstructable
                 }
                 if (sentence.startsWith(Consts.execCmdPre) ||
                         sentence.startsWith(Consts.demonstrateStr) ||
-                        sentence.startsWith(Consts.playYouTubeStr))
+                        sentence.startsWith(Consts.playYouTubeStr) ||
+                        sentence.startsWith(Consts.timerFunctions + Consts.instructableDelimiterColon))
                 {
                     if (sentence.startsWith(Consts.execCmdPre))
                     {
@@ -98,13 +99,18 @@ public class ToInstructable
                         commands.add(exeCommand);
                         commands.add(sayWithCom + "Show me how to " + scriptName + "! Once you are done click on the duck and select end recording.");
                     }
-                    else
+                    else if (sentence.startsWith(Consts.playYouTubeStr))
                     {
                         String videoId = sentence.substring(Consts.playYouTubeStr.length()).trim();
                         String exeCommand = Consts.youTube + Consts.commandChar;
                         exeCommand += videoId;
                         commands.add(exeCommand);
                         commands.add(sayWithCom + "Playing...");
+                    }
+                    else if (sentence.startsWith(Consts.timerFunctions + Consts.instructableDelimiterColon))
+                    {
+                        String json = sentence.substring(Consts.timerFunctions.length() + 1).trim();
+                        commands.add(Consts.timerFunctions + Consts.commandChar + json);
                     }
                 }
                 else
