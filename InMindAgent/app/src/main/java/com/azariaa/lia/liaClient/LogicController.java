@@ -10,6 +10,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import static com.azariaa.lia.simpleUtils.getCurrentTimeStr;
+
 //import com.yahoo.inmind.comm.generic.control.MessageBroker;
 
 /*
@@ -61,7 +63,7 @@ public class LogicController
     public void ConnectToServer(String sendThisText, boolean isCommand)
     {
         //closeConnection();
-        sendMessageUsingTcp(uniqueId + Consts.commandChar + (isCommand ? Consts.sendingCommand : Consts.sendingText) + Consts.commandChar + sendThisText);
+        sendMessageUsingTcp(uniqueId + Consts.commandChar +  getCurrentTimeStr() + Consts.commandChar + (isCommand ? Consts.sendingCommand : Consts.sendingText) + Consts.commandChar + sendThisText);
     }
 
     public void ConnectToServer()
@@ -70,7 +72,7 @@ public class LogicController
         if (tcpClient != null && audioStreamer != null && audioStreamer.isStreaming())
             return;
         //closeConnection(); //not closing, since sometimes remains open.
-        sendMessageUsingTcp(uniqueId + Consts.commandChar + Consts.requestSendAudio + Consts.commandChar);
+        sendMessageUsingTcp(uniqueId + Consts.commandChar +  getCurrentTimeStr() + Consts.commandChar + Consts.requestSendAudio + Consts.commandChar);
     }
 
     private void sendMessageUsingTcp(String messageToSend)

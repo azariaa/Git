@@ -8,7 +8,6 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
@@ -49,7 +48,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver
 
             //this will send a notification message
             ComponentName comp = new ComponentName(context.getPackageName(),
-                    AlarmService.class.getName());
+                    AlarmNotificationSender.class.getName());
             startWakefulService(context, (intent.setComponent(comp)));
 
 

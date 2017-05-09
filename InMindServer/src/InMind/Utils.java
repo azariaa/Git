@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.logging.*;
 
 /**
@@ -13,6 +14,8 @@ public class Utils
 {
 
     static private final String loggingFile = "./logging/inmindServer.log";
+
+    public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static Logger createLogger(String className)
     {

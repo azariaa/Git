@@ -1,6 +1,8 @@
 package com.azariaa.lia;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class simpleUtils 
 {
@@ -13,4 +15,10 @@ public class simpleUtils
 	public static int subtractDatesInMillisec(Date date1, Date date2) {
 		return (int)(date1.getTime() - date2.getTime());
 	}
+
+    public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+    public static String getCurrentTimeStr()
+    {
+        return dateFormat.format(new Date());
+    }
 }

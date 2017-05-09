@@ -14,6 +14,7 @@ import com.azariaa.lia.simpleUtils;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity
     ArrayList<String> chatArray = new ArrayList<>();
     //ArrayAdapter<String> chatAdapter;
     ListViewCustomAdapter<String> chatAdapter;
+    AlarmTimer alarmTimer;
 
     public Handler userNotifierHandler, talkHandler, launchHandler, ttsCompleteHandler; // TODO: should
     // these all be
@@ -88,11 +90,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Log.d("Main", "onCreate");
         selfPointer = this;
-
-
-        // Initializing the Message Broker
-        //MessageBroker.getInstance(this);
-
 
         userNotifierHandler = new Handler(new Handler.Callback()
         {
@@ -349,7 +346,7 @@ public class MainActivity extends AppCompatActivity
                 else if (msg.arg1 == 4) //timeFunctions
                 {
                     Log.d("handleMessage", "timerFunctions");
-                    dealWithTimeMessage(msg.obj.toString());
+                    alarmTimer.dealWithTimeMessage(msg.obj.toString());
                 }
                 return false;
             }
@@ -512,42 +509,24 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        alarmTimer = AlarmTimer.CreateAlarmTimer((AlarmManager) getSystemService(ALARM_SERVICE), getApplicationContext(), new AlarmTimer.SpeakThis()
+        {
+            @Override
+            public void speakThis(String toSay)
+            {
+                //ttsCont.speakThis(toSay);
+                Message msgTalk = new Message();
+                msgTalk.arg1 = 3; //say aloud and toast
+                msgTalk.obj = toSay;
+                talkHandler.sendMessage(msgTalk);
+            }
+        }, talkHandler);
+
         // minBufSize += 2048;
         // System.out.println("minBufSize: " + minBufSize);
 
         // attach a Message. set msg.arg to 1 and msg.obj to string for toast.
         Log.d("Main", "onCreate-End");
-    }
-
-    private void dealWithTimeMessage(String jsonStr)
-    {
-        try
-        {
-            JSONObject json = new JSONObject(jsonStr);
-            String type = json.getString("type");
-            if (type.equals("read"))
-            {
-                String whatToRead = json.getString("whatToRead");
-                Calendar now = Calendar.getInstance();
-                if (whatToRead.equals("currentTime"))
-                {
-                    SimpleDateFormat sdf = new SimpleDateFormat("h:mm aa", Locale.US);
-                    String currTime = sdf.format(now.getTime());
-                    ttsCont.speakThis("The time is: " + currTime);
-                }
-                else
-                {
-                    SimpleDateFormat sdf = new SimpleDateFormat("EEEE. MMM dd yyyy", Locale.US);
-                    String currTime = sdf.format(now.getTime());
-                    ttsCont.speakThis("Today is: " + currTime);
-                }
-            }
-
-        } catch (Exception ex)
-        {
-            Log.e("Main", "dealWithTimeMessage exception:" + ex.getMessage());
-        }
-
     }
 
     private void bringToForegroundAndTurnOnScreen()

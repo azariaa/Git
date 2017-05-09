@@ -2,6 +2,7 @@ package InMind.Server;
 
 import InMind.Consts;
 import InMind.Server.asr.ASR;
+import InMind.Utils;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -21,6 +22,7 @@ public class ToInstructable
     static private final String actionResendRequested = "actionResendRequested";
     static private final String actionSetEmailAndPswd = "actionSetEmailAndPswd";
     static private final String userSaysParam = "userSays";
+    static public final String userTimeParam = "userTime"; //"yyyy-MM-dd HH:mm:ss"
     static private final String userIdParam = "userId";
     static private final String usernameParm = "username";
     static private final String encPwd = "encPwd";
@@ -42,12 +44,12 @@ public class ToInstructable
     Optional<String> userPassword = Optional.empty();
 
 
-    public List<String> connectWithInstructable(ASR.AsrRes userText)
+    public List<String> connectWithInstructable(ASR.AsrRes userText, Date userTime)
     {
         try
         {
             if (obtainingUsernamePassword)
-                return dealWithEmailAndPassword(false, userText);
+                return dealWithEmailAndPassword(false, userText, userTime);
 
             String username = IntStream.range(0, userId.length()).filter(i -> (i % 2) == 0).mapToObj(i -> (Character.toString(userId.charAt(i)))).collect(Collectors.joining(""));
             String enctyptionPwd = IntStream.range(0, userId.length()).filter(i -> (i % 2) == 1).mapToObj(i -> (Character.toString(userId.charAt(i)))).collect(Collectors.joining(""));
@@ -64,6 +66,7 @@ public class ToInstructable
                 bestPossibleSentences = bestPossibleSentences + multiAltSentenceConcat + userText.alternatives.get(i);
             }
             parameters.put(userSaysParam, bestPossibleSentences);
+            parameters.put(userTimeParam, Utils.dateFormat.format(userTime));
             String url = "http://localhost:" + portToUse + "/" + contextRealtimeAgent;
             String response = dialogUtils.callServer(url, parameters, false);
 
@@ -75,7 +78,7 @@ public class ToInstructable
                     continue;
                 if (sentence.startsWith(Consts.getEmailAndPassword)) //TODO: future versions should obtain a token using oAuth 2
                 {
-                    return dealWithEmailAndPassword(true, userText /*shouldn't really matter here*/);
+                    return dealWithEmailAndPassword(true, userText /*shouldn't really matter here*/, userTime);
                 }
                 if (sentence.startsWith(Consts.execCmdPre) ||
                         sentence.startsWith(Consts.demonstrateStr) ||
@@ -129,7 +132,7 @@ public class ToInstructable
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
-    private List<String> dealWithEmailAndPassword(boolean gotNewRequest, ASR.AsrRes userText)
+    private List<String> dealWithEmailAndPassword(boolean gotNewRequest, ASR.AsrRes userText, Date userTime)
     {
         if (gotNewRequest)
         {
@@ -153,7 +156,7 @@ public class ToInstructable
         else
         {
             obtainingUsernamePassword = false;
-            return connectWithInstructable(userText);
+            return connectWithInstructable(userText, userTime);
         }
     }
 

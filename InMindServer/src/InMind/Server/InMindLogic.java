@@ -2,7 +2,9 @@ package InMind.Server;
 
 import InMind.Consts;
 import InMind.Server.asr.ASR;
+import InMind.Utils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -76,18 +78,20 @@ public class InMindLogic
                 {
                     userId = m.group(1);
 
-                    ASR.AsrRes asrRes = null;
+                    Date userTime = Utils.dateFormat.parse(m.group(2));
 
-                    if (m.group(2).equalsIgnoreCase(Consts.sendingText) || m.group(2).equalsIgnoreCase(Consts.sendingCommand))
+                    ASR.AsrRes asrRes;
+
+                    if (m.group(3).equalsIgnoreCase(Consts.sendingText) || m.group(3).equalsIgnoreCase(Consts.sendingCommand))
                     {
                         asrRes = new ASR.AsrRes();
                         asrRes.confidence = 1;
-                        asrRes.text = m.group(3).trim();//TODO: might want to remove punctuation.
+                        asrRes.text = m.group(4).trim();//TODO: might want to remove punctuation.
                         asrRes.wasSentAsText = true;
-                        dealWithText(userId, asrRes, m.group(2).equalsIgnoreCase(Consts.sendingText));
+                        dealWithText(userId, asrRes, m.group(3).equalsIgnoreCase(Consts.sendingText), userTime);
                     }
 
-                    if (m.group(2).equalsIgnoreCase(Consts.requestSendAudio))
+                    if (m.group(3).equalsIgnoreCase(Consts.requestSendAudio))
                     {
                         int portToUse = nextPort();
                         tcpServer.sendMessage(Consts.connectUdp + Consts.commandChar + portToUse);
@@ -98,7 +102,7 @@ public class InMindLogic
                             @Override
                             public void dealWithAsrRes(ASR.AsrRes asrRes)
                             {
-                                dealWithText(userId, asrRes, true);
+                                dealWithText(userId, asrRes, true, userTime);
                             }
 
                             @Override
@@ -118,6 +122,10 @@ public class InMindLogic
                     }
 
                 }
+                else
+                {
+                    System.out.println("InMindLogic" + " unknown command sent!");
+                }
             } catch (Exception e)
             {
                 e.printStackTrace();
@@ -129,7 +137,7 @@ public class InMindLogic
          * @param userId
          * @param asrRes
          */
-        private void dealWithText(String userId, ASR.AsrRes asrRes, boolean echoBackToUser)
+        private void dealWithText(String userId, ASR.AsrRes asrRes, boolean echoBackToUser, Date userTime)
         {
             if (asrRes != null && asrRes.text != null && !asrRes.text.isEmpty() && userId != null)
             {
@@ -145,7 +153,7 @@ public class InMindLogic
                     userConversationMap.put(userId,userConversation);
                 }
 
-                UserConversation.ToDoWithConnection toDoWithConnection = userConversation.dealWithMessage(asrRes, new MessageSender());
+                UserConversation.ToDoWithConnection toDoWithConnection = userConversation.dealWithMessage(asrRes, new MessageSender(), userTime);
 
                 if (toDoWithConnection != UserConversation.ToDoWithConnection.nothing)
                 {

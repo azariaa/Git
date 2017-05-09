@@ -9,12 +9,12 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-public class AlarmService extends IntentService
+public class AlarmNotificationSender extends IntentService
 {
 
-    public AlarmService()
+    public AlarmNotificationSender()
     {
-        super("AlarmService");
+        super("AlarmNotificationSender");
     }
 
     @Override
@@ -30,13 +30,13 @@ public class AlarmService extends IntentService
         }
         catch (Exception e)
         {
-            Log.e("AlarmService", "Error during sending notification: " + e.getMessage());
+            Log.e("AlarmNotificationSender", "Error during sending notification: " + e.getMessage());
         }
     }
 
     private void sendNotification(String msg)
     {
-        Log.d("AlarmService", "Preparing to send notification...: " + msg);
+        Log.d("AlarmNotificationSender", "Preparing to send notification...: " + msg);
         NotificationManager alarmNotificationManager = (NotificationManager) this
                 .getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -51,6 +51,6 @@ public class AlarmService extends IntentService
 
         alamNotificationBuilder.setContentIntent(contentIntent);
         alarmNotificationManager.notify(1, alamNotificationBuilder.build());
-        Log.d("AlarmService", "Notification sent.");
+        Log.d("AlarmNotificationSender", "Notification sent.");
     }
 }

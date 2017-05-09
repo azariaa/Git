@@ -35,7 +35,10 @@ public class Consts
     static public final String agentNameKeyword = "exclamation";//agent name is removed from ASR result
 
     //client requests must start with user Id. e.g., userId^SendingText^text
-    static public final String clientMessagePattern = "([-a-zA-Z0-9]+)"+Consts.messageSeparatorForPattern+"(\\p{Alpha}*)"+Consts.messageSeparatorForPattern+"(.*)";
+    static public final String clientMessagePattern = "([-a-zA-Z0-9]+)" //userId
+            + Consts.messageSeparatorForPattern + "([-0-9: ]+)" //userTime
+            + Consts.messageSeparatorForPattern+"(\\p{Alpha}*)" //command
+            + Consts.messageSeparatorForPattern + "(.*)"; //command parameters
     //client requests
     static public final String requestSendAudio = "RequestSendAudio";
     static public final String sendingText = "SendingText";

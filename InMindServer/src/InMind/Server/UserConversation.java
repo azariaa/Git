@@ -3,6 +3,7 @@ package InMind.Server;
 import InMind.Server.asr.ASR;
 import InMind.Utils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -35,13 +36,13 @@ public class UserConversation
     /*
     returns whether to renew a connection.
      */
-    public ToDoWithConnection dealWithMessage(ASR.AsrRes asrRes, InMindLogic.MessageReceiver.MessageSender messageSender)
+    public ToDoWithConnection dealWithMessage(ASR.AsrRes asrRes, InMindLogic.MessageReceiver.MessageSender messageSender, Date userTime)
     {
         String userText = asrRes.text;
         logger.info("userid:" + userId + ", userText" +(asrRes.wasSentAsText ? "(as text)" : "(from speech)")+":" + userText);
 
 
-        List<String> toSend = toInstructable.connectWithInstructable(asrRes);
+        List<String> toSend = toInstructable.connectWithInstructable(asrRes, userTime);
         sendToUser(messageSender, toSend);
 //        if (dialogFileBase.isEmpty() || fullInfo.containsKey(dontRenewConnectionStr))
 //            return ToDoWithConnection.close;
