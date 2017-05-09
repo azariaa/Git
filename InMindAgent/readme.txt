@@ -19,14 +19,12 @@ List of features:
 - News (e.g. "science news")
 - Factoid questions (e.g. "who is the president of the united states")
 - Spell words (e.g. "spell elephant")
+- Timers (set a timer for 5 minutes with message go home. Or: tell me to go home in 5 minutes)
+- Alarms (e.g. set an alarm for tomorrow 7am. read timers/alarms)
+- Current time/date (what's the time? What's the date?).
 
 Under development:
-- Timers (under development)
-- Alarms (under development)
-- Current time.
-- Calculations (e.g. how much is twenty seven times forty three point two?) Inc. time calculations (under development)
+- Change wake-up word (in settings) (under development)
+- Calculations (e.g. how much is twenty seven times forty three point two plus twelve?) Inc. time calculations (under development)
 - Weather (under development)
 - Conditional execution (under development)
-
-
-
