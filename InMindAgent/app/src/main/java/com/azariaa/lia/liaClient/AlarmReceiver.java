@@ -22,7 +22,8 @@ public class AlarmReceiver extends WakefulBroadcastReceiver
 {
     public static final String strRingBell = "ringBell";
     public static final String strToSay = "toSay";
-    public static final String strSpeakHandler = "speakHandler";
+    public static final String strIsTimer = "isTimer";
+    //public static final String strSpeakHandler = "speakHandler";
 
     @Override
     public void onReceive(final Context context, Intent intent)
@@ -39,6 +40,10 @@ public class AlarmReceiver extends WakefulBroadcastReceiver
             if (extras.containsKey(strToSay))
                 toSay = extras.getString(strToSay);
 
+            Boolean isTimer = false;
+            if (extras.containsKey(strIsTimer))
+                isTimer = extras.getBoolean(strIsTimer);
+
             if (ringBell)
             {
                 Log.d("AlarmReceiver", "ringing bell");
@@ -51,32 +56,39 @@ public class AlarmReceiver extends WakefulBroadcastReceiver
                 final MediaPlayer mediaPlayer = MediaPlayer.create(context, alarmUri);
                 mediaPlayer.setLooping(false);
                 mediaPlayer.start();
+                AlarmTimer.setMediaPlayer(mediaPlayer);
+                int timeToStop = 15*1000;
+                if (!isTimer)
+                    timeToStop *= 2;
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mediaPlayer.stop();
+                        AlarmTimer.removeMediaPlayer();
                     }
-                }, 10000);
+                }, timeToStop);
 //                Ringtone ringtone = RingtoneManager.getRingtone(context, alarmUri);
 //                ringtone.play();
             }
 
-//            //this will send a notification message
-//            ComponentName comp = new ComponentName(context.getPackageName(),
-//                    AlarmNotificationSender.class.getName());
-//            startWakefulService(context, (intent.setComponent(comp)));
+            //this will send a notification message
+            ComponentName comp = new ComponentName(context.getPackageName(),
+                    NotificationSender.class.getName());
+            startWakefulService(context, (intent.setComponent(comp)));
 
 
-            Handler speakHandler = AlarmTimer.getSpeakHandler();
-            if (speakHandler != null)
+            //Handler speakHandler = AlarmTimer.getSpeakHandler();
+            AlarmTimer.SpeakThis speakThis = AlarmTimer.getSpeakThis();
+            if (speakThis != null)
             {
                 //speak!
-                if (toSay != null && !toSay.isEmpty())
+                if (toSay != null && !toSay.trim().isEmpty())
                 {
-                    Message msg = new Message();
-                    msg.obj = toSay;
-                    msg.arg1 = 1;
-                    speakHandler.sendMessage(msg);
+                    speakThis.speakThis(toSay + "\n" + toSay + "\n" + toSay);
+//                    Message msg = new Message();
+//                    msg.obj = toSay + "\n" + toSay + "\n" + toSay;
+//                    msg.arg1 = 1;
+//                    speakHandler.sendMessage(msg);
                 }
                 //delete alarm from alarmIntents
                 AlarmTimer.staticRemoveOldAlarms();

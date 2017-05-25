@@ -8,6 +8,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -18,17 +19,22 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+import static android.content.Context.ALARM_SERVICE;
+
 /**
  * Singleton
  */
 public class AlarmTimer
 {
+
     interface SpeakThis
     {
         void speakThis(String toSay); //, int flag);
@@ -38,7 +44,8 @@ public class AlarmTimer
     AlarmManager alarmManager;
     Context context;
     SpeakThis speakThis;
-    Handler speakHandler;
+    MediaPlayer mediaPlayer = null;
+    final Object mediaPlayerSynchronizer = new Object();
     private final List<AlarmIntent> alarmIntents = new LinkedList<>();
 
     SimpleDateFormat sdfForReadingAloud = new SimpleDateFormat("h:mm aa");
@@ -47,22 +54,52 @@ public class AlarmTimer
     {
     }
 
-    public static AlarmTimer CreateAlarmTimer(AlarmManager alarmManager, Context context, SpeakThis speakThis, Handler speakHandler)
+    public static AlarmTimer CreateAlarmTimer(Context context, SpeakThis speakThis, Handler speakHandler)
     {
         if (instance == null)
         {
             instance = new AlarmTimer();
-            instance.alarmManager = alarmManager; //(AlarmManager) getSystemService(ALARM_SERVICE);
-            instance.context = context;
+            instance.alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+            instance.context = context.getApplicationContext();
             instance.speakThis = speakThis;
-            instance.speakHandler = speakHandler;
+            //instance.speakHandler = speakHandler;
         }
         return instance;
     }
 
-    public static Handler getSpeakHandler()
+    public static void setMediaPlayer(MediaPlayer mediaPlayer)
     {
-        return instance.speakHandler;
+        synchronized (instance.mediaPlayerSynchronizer)
+        {
+            instance.mediaPlayer = mediaPlayer;
+        }
+    }
+
+    public static void removeMediaPlayer()
+    {
+        synchronized (instance.mediaPlayerSynchronizer)
+        {
+            instance.mediaPlayer = null;
+        }
+    }
+
+    public void stopAlarm()
+    {
+        synchronized (mediaPlayerSynchronizer)
+        {
+            if (mediaPlayer != null)
+                mediaPlayer.stop();
+        }
+    }
+
+//    public static Handler getSpeakHandler()
+//    {
+//        return instance.speakHandler;
+//    }
+
+    public static SpeakThis getSpeakThis()
+    {
+        return instance.speakThis;
     }
 
     void dealWithTimeMessage(String jsonStr)
@@ -139,25 +176,23 @@ public class AlarmTimer
 
     private void deleteAlarmTimer(boolean isTimer, Date alarmTimerDate)
     {
-        int alarmdeleted = -1;
-        int i = 0;
-        Calendar calendar = date2Calendar(alarmTimerDate);
-        for (AlarmIntent alarmIntent : alarmIntents)
-        {
-            if (alarmIntent.isATimer == isTimer && alarmIntent.alarmTime.equals(calendar))
-            {
-                alarmManager.cancel(alarmIntent.pendingIntent);
-                alarmdeleted = i;
-                break;
+        //find the alarm closest to the requested time
+        final long alarmTimeDateFinal = alarmTimerDate.getTime();
+        AlarmIntent closest = Collections.min(alarmIntents, new Comparator<AlarmIntent>() {
+            public int compare(AlarmIntent d1, AlarmIntent d2) {
+                long diff1 = Math.abs(d1.alarmTime.getTime().getTime() - alarmTimeDateFinal);
+                long diff2 = Math.abs(d2.alarmTime.getTime().getTime() - alarmTimeDateFinal);
+                return Long.compare(diff1, diff2);
             }
-            i++;
-        }
-
-        if (alarmdeleted >= 0)
+        });
+        //if closest alarm is within 10 minutes of requested time delete it, otherwise say not found
+        long distance = Math.abs(closest.alarmTime.getTime().getTime() - alarmTimeDateFinal);
+        boolean closeEnough = (distance / 1000) / 60 < 10;
+        if (closeEnough)
         {
-            readAlarm(alarmIntents.get(alarmdeleted), false);
-            speakThis("canceled");
-            alarmIntents.remove(alarmdeleted);
+            alarmManager.cancel(closest.pendingIntent);
+            speakThis(getStrForReadingAlarm(closest, false) + ", was canceled successfully");
+            alarmIntents.remove(closest);
         }
         else
         {
@@ -236,6 +271,7 @@ public class AlarmTimer
             Intent myIntent = new Intent(context, AlarmReceiver.class);
             myIntent.putExtra(AlarmReceiver.strToSay, toSay);
             myIntent.putExtra(AlarmReceiver.strRingBell, ringBell);
+            myIntent.putExtra(AlarmReceiver.strIsTimer, isTimer);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             AlarmIntent alarmIntent = new AlarmIntent(isTimer, pendingIntent, toSay, ringBell, calendar);
             synchronized (alarmIntents)
@@ -249,7 +285,7 @@ public class AlarmTimer
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 
             //clearTexts();
-            readAlarm(alarmIntent, true);
+            speakThis(getStrForReadingAlarm(alarmIntent, true));
         }
         catch (Exception e)
         {
@@ -313,11 +349,11 @@ public class AlarmTimer
                     toRead.add(alarmIntent);
             }
             String toSay = "You have " + (toRead.size() == 0 ? "no" : toRead.size()) +
-                    " alarm" + ((toRead.size() == 1) ? "" : "s") + " set";
+                    " " + (isATimer? "timer" : "alarm") + ((toRead.size() == 1) ? "" : "s") + " set";
             speakThis(toSay);
             for (AlarmIntent alarmIntent : toRead)
             {
-                readAlarm(alarmIntent, false);
+                speakThis(getStrForReadingAlarm(alarmIntent, false));
             }
         }
         catch (Exception e)
@@ -326,7 +362,7 @@ public class AlarmTimer
         }
     }
 
-    private void readAlarm(AlarmIntent alarmIntent, boolean nowSet)
+    private String getStrForReadingAlarm(AlarmIntent alarmIntent, boolean nowSet)
     {
         Log.d("AlarmTimer", "Reading Alarm");
         Calendar now = Calendar.getInstance();
@@ -364,7 +400,8 @@ public class AlarmTimer
         toSay += " with " + (alarmIntent.ringBell ? "a" : "no") + " bell.";
         if (!alarmIntent.toSay.isEmpty())
             toSay += " Message:" + alarmIntent.toSay;
-        speakThis(toSay);
+        return toSay;
+        //speakThis(toSay);
     }
 
     static void staticRemoveOldAlarms()

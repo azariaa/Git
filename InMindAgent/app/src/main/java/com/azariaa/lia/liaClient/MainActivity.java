@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity
                     ((ImageView) findViewById(R.id.image_recording)).setImageResource(R.drawable.rec_recording);
                     mainLayout.setBackgroundColor(0x778800DD);
                     ttsCont.stop();
+                    alarmTimer.stopAlarm();
 
                     //turn on flashlight
                     new Thread()
@@ -331,17 +332,8 @@ public class MainActivity extends AppCompatActivity
                 else if (msg.arg1 == 3) //youtube
                 {
                     Log.d("handleMessage", "openning YouTube");
-                    String videoId = msg.obj.toString();
-                    Log.d("handleMessage", "videoId:" + videoId);
-                    //YouTube requires screen to be on to work.
-                    //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/" + videoId)));
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("VIDEO_ID", videoId);
-                    startActivity(intent);
-                    turnOnScreen("YouTube", videoId);
-
+                    final String videoId = msg.obj.toString();
+                    playVideoWithChecking(videoId);
                 }
                 else if (msg.arg1 == 4) //timeFunctions
                 {
@@ -509,7 +501,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        alarmTimer = AlarmTimer.CreateAlarmTimer((AlarmManager) getSystemService(ALARM_SERVICE), getApplicationContext(), new AlarmTimer.SpeakThis()
+        alarmTimer = AlarmTimer.CreateAlarmTimer(getApplicationContext(), new AlarmTimer.SpeakThis()
         {
             @Override
             public void speakThis(String toSay)
@@ -527,6 +519,41 @@ public class MainActivity extends AppCompatActivity
 
         // attach a Message. set msg.arg to 1 and msg.obj to string for toast.
         Log.d("Main", "onCreate-End");
+    }
+
+    String lastVideoPlayed = "";
+    private void playVideoWithChecking(final String videoId)
+    {
+        if (lastVideoPlayed.equals(videoId))
+        {
+            playVideo("abc"); //first play something else, so can play same video again
+            new Handler().postDelayed(new Runnable() //then wait a little bit before playing the video
+            {
+                @Override
+                public void run()
+                {
+                    playVideo(videoId);
+                }
+            }, 2500);
+        }
+        else
+        {
+            lastVideoPlayed = videoId;
+            playVideo(videoId);
+        }
+    }
+
+    private void playVideo(String videoId)
+    {
+        Log.d("handleMessage", "videoId:" + videoId);
+        //YouTube requires screen to be on to work.
+        //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/" + videoId)));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("VIDEO_ID", videoId);
+        startActivity(intent);
+        turnOnScreen("YouTube", videoId);
     }
 
     private void bringToForegroundAndTurnOnScreen()
@@ -783,6 +810,7 @@ public class MainActivity extends AppCompatActivity
             // audioStreamer.stopStreaming();
             logicController.stopStreaming();
             ttsCont.stop();
+            alarmTimer.stopAlarm();
             //inmindCommandListener.stopListening();
         }
 

@@ -19,8 +19,8 @@ List of features:
 - News (e.g. "science news")
 - Factoid questions (e.g. "who is the president of the united states")
 - Spell words (e.g. "spell elephant")
-- Timers (set a timer for 5 minutes with message go home. Or: tell me to go home in 5 minutes)
-- Alarms (e.g. set an alarm for tomorrow 7am. read timers/alarms)
+- Timers (set a timer for 5 minutes with message go home. Or: tell me to go home in 5 minutes, remind me to take the cake out of the over in an hour)
+- Alarms (e.g. set an alarm for tomorrow 7am. read timers/alarms, cancel timers/alarms, cancel 6 am alarm)
 - Current time/date (what's the time? What's the date?).
 
 Under development:
