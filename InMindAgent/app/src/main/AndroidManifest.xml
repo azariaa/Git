@@ -52,6 +52,9 @@
         <activity android:name="com.azariaa.lia.liaClient.ScreenOn">
         </activity>
         <receiver android:name=".AlarmReceiver" />
+        <service
+            android:name=".NotificationSender"
+            android:enabled="true" />
     </application>
 
 </manifest>

@@ -12,6 +12,7 @@ import com.azariaa.lia.liaClient.InMindCommandListener.InmindCommandInterface;
 import com.azariaa.lia.Consts;
 import com.azariaa.lia.simpleUtils;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -20,6 +21,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.display.DisplayManager;
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity
     private RelativeLayout mainLayout;
     private ListView chatView;
     EditText editText;
+
     ArrayList<String> chatArray = new ArrayList<>();
     //ArrayAdapter<String> chatAdapter;
     ListViewCustomAdapter<String> chatAdapter;
@@ -342,6 +345,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 return false;
             }
+
         });
 
 //        clearScreenFlags = new Handler(new Handler.Callback()
@@ -453,21 +457,6 @@ public class MainActivity extends AppCompatActivity
                     launchHandler, startStopRecNotifier, uniqueId);
         }
 
-        if (inmindCommandListener == null)
-        {
-            inmindCommandListener = new InMindCommandListener(new InmindCommandInterface()
-            {
-
-                @Override
-                public void commandDetected()
-                {
-                    bringToForegroundAndTurnOnScreen();
-                    connectAudioToServer();
-                }
-            }, this);
-            inmindCommandListener.listenForInmindCommand();
-        }
-
         startButton = (ImageButton) findViewById(R.id.button_rec);
         startFromCircle = (ImageButton) findViewById(R.id.image_recording);
         stopKeyword = (ImageButton) findViewById(R.id.listen_keyword);
@@ -477,7 +466,6 @@ public class MainActivity extends AppCompatActivity
         startButton.setOnClickListener(startListener);
         startFromCircle.setOnClickListener(startListener);
         stopButton.setOnClickListener(stopListener);
-
 
         chatView = (ListView) findViewById(R.id.listView);
         chatAdapter = new ListViewCustomAdapter<String>(this, android.R.layout.simple_list_item_1, chatArray);
@@ -506,19 +494,48 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void speakThis(String toSay)
             {
-                //ttsCont.speakThis(toSay);
-                Message msgTalk = new Message();
-                msgTalk.arg1 = 3; //say aloud and toast
-                msgTalk.obj = toSay;
-                talkHandler.sendMessage(msgTalk);
+                sayToastAndShowWithHandler(toSay);
             }
         }, talkHandler);
+
+        updateIsKeywordWakeupOn();
+        if (inmindCommandListener == null)
+        {
+            inmindCommandListener = new InMindCommandListener(new InmindCommandInterface()
+            {
+
+                @Override
+                public void commandDetected()
+                {
+                    bringToForegroundAndTurnOnScreen();
+                    connectAudioToServer();
+                }
+            }, this);
+            if (isKeywordWakeupOn)
+                inmindCommandListener.listenForInmindCommand();
+        }
 
         // minBufSize += 2048;
         // System.out.println("minBufSize: " + minBufSize);
 
         // attach a Message. set msg.arg to 1 and msg.obj to string for toast.
         Log.d("Main", "onCreate-End");
+    }
+
+
+    public void sayToastAndShowWithHandler(String toSay)
+    {
+        //ttsCont.speakThis(toSay);
+        Message msgTalk = new Message();
+        msgTalk.arg1 = 3; //say aloud and toast
+        msgTalk.obj = toSay;
+        talkHandler.sendMessage(msgTalk);
+    }
+
+    public void sayAndToast(String toSay)
+    {
+        ttsCont.speakThis(toSay);
+        toastWithTimer(toSay, true);
     }
 
     String lastVideoPlayed = "";
@@ -829,21 +846,54 @@ public class MainActivity extends AppCompatActivity
 
     };
 
-    boolean isKeywordWakeupOn = true;
+    boolean isKeywordWakeupOn;
+
+    private void updateIsKeywordWakeupOn()
+    {
+        boolean defaultWakeup = false;
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        //noinspection all
+        boolean keywordWakeupOn = prefs.getBoolean("isKeywordWakeupOn", defaultWakeup);
+        isKeywordWakeupOn = keywordWakeupOn;
+        setListeningKeywordImage();
+    }
+
+    private void setDefaultWakeupOn(boolean defaultWakeupOn)
+    {
+        //write to file defaultWakeupOn
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        editor.putBoolean("isKeywordWakeupOn", defaultWakeupOn);
+        editor.apply();
+    }
 
     public void toggleListenKeyword(View view)
     {
+        isKeywordWakeupOn = !isKeywordWakeupOn;
         if (isKeywordWakeupOn)
         {
-            stopKeyword.setImageResource(R.drawable.start_listening_keyword);
-            inmindCommandListener.stopListening();
+            inmindCommandListener.listenForInmindCommand();
+            sayAndToast("Listening for wakeup keyword");
         }
         else
         {
-            stopKeyword.setImageResource(R.drawable.stop_listening_keyword);
-            inmindCommandListener.listenForInmindCommand();
+            inmindCommandListener.stopListening();
+            sayAndToast("Not listening for wakeup keyword");
         }
-        isKeywordWakeupOn = !isKeywordWakeupOn;
+        setDefaultWakeupOn(isKeywordWakeupOn);
+        setListeningKeywordImage();
+    }
+
+    public void setListeningKeywordImage()
+    {
+        if (isKeywordWakeupOn)
+        {
+            stopKeyword.setImageResource(R.drawable.stop_listening_keyword);
+        }
+        else
+        {
+            stopKeyword.setImageResource(R.drawable.start_listening_keyword);
+        }
+
     }
 
 
