@@ -26,12 +26,12 @@ public class InMindCommandListener
 
     boolean isListeningForCommand = false;
 
-    InMindCommandListener(InmindCommandInterface inmindCommandInterface, final Context context)
+    InMindCommandListener(InmindCommandInterface inmindCommandInterface, final Context context, String wakeupPhrase, int wakeupSensitivity)
     {
         minmindCommandInterface = inmindCommandInterface;
         this.context = context;
 
-        pocketSphinxSearcher = new PocketSphinxSearcher(context, Consts.agentNameKeyword, new PocketSphinxSearcher.SphinxRes(){
+        pocketSphinxSearcher = new PocketSphinxSearcher(context, wakeupPhrase, wakeupSensitivity, new PocketSphinxSearcher.SphinxRes(){
 
             int i =0;
             @Override

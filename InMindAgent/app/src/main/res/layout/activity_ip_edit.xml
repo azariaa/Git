@@ -12,7 +12,7 @@
         android:id="@+id/ip_in_use"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/edit_message" />
+        android:hint="ip address" />
 
     <Button
         android:id="@+id/button_send_text"

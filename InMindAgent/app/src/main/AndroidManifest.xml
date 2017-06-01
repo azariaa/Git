@@ -41,6 +41,10 @@
             android:label="@string/title_activity_ip_edit">
         </activity>
         <activity
+            android:name="com.azariaa.lia.liaClient.ChangeWakeupActivity"
+            android:label="ChangeWakeupActivity">
+        </activity>
+        <activity
             android:name="com.azariaa.lia.liaClient.ComWithSugilite"
             android:theme="@android:style/Theme.NoDisplay">
             <intent-filter>

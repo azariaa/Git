@@ -1,10 +1,7 @@
 package com.azariaa.lia.liaClient;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
 import com.azariaa.lia.liaClient.InMindCommandListener.InmindCommandInterface;
 //import com.yahoo.inmind.comm.generic.control.MessageBroker;
@@ -12,10 +9,8 @@ import com.azariaa.lia.liaClient.InMindCommandListener.InmindCommandInterface;
 import com.azariaa.lia.Consts;
 import com.azariaa.lia.simpleUtils;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,6 +27,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
@@ -52,8 +48,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
-import org.json.JSONObject;
 
 /**
  * Created by Amos Azaria on 31-Dec-14.
@@ -465,7 +459,7 @@ public class MainActivity extends AppCompatActivity
 
         startButton.setOnClickListener(startListener);
         startFromCircle.setOnClickListener(startListener);
-        stopButton.setOnClickListener(stopListener);
+        stopButton.setOnClickListener(stopButtonClick);
 
         chatView = (ListView) findViewById(R.id.listView);
         chatAdapter = new ListViewCustomAdapter<String>(this, android.R.layout.simple_list_item_1, chatArray);
@@ -498,28 +492,36 @@ public class MainActivity extends AppCompatActivity
             }
         }, talkHandler);
 
-        updateIsKeywordWakeupOn();
-        if (inmindCommandListener == null)
-        {
-            inmindCommandListener = new InMindCommandListener(new InmindCommandInterface()
-            {
-
-                @Override
-                public void commandDetected()
-                {
-                    bringToForegroundAndTurnOnScreen();
-                    connectAudioToServer();
-                }
-            }, this);
-            if (isKeywordWakeupOn)
-                inmindCommandListener.listenForInmindCommand();
-        }
+        getWakeupPhrase();
+        getWakeupSensitivity();
+        getIsKeywordWakeupOn();
+        getInMindCommandListener();
+        if (isKeywordWakeupOn)
+            inmindCommandListener.listenForInmindCommand();
 
         // minBufSize += 2048;
         // System.out.println("minBufSize: " + minBufSize);
 
         // attach a Message. set msg.arg to 1 and msg.obj to string for toast.
         Log.d("Main", "onCreate-End");
+    }
+
+    /**
+     * updates listener (inmindCommandListener). closes old one if running, and starts listening again if required.
+     */
+    private void getInMindCommandListener()
+    {
+        if (inmindCommandListener != null)
+            inmindCommandListener.stopListening(); //no destroy method
+        inmindCommandListener = new InMindCommandListener(new InmindCommandInterface()
+        {
+            @Override
+            public void commandDetected()
+            {
+                bringToForegroundAndTurnOnScreen();
+                connectAudioToServer();
+            }
+        }, this, wakeupPhrase, wakeupSensitivity);
     }
 
 
@@ -759,12 +761,6 @@ public class MainActivity extends AppCompatActivity
         {
             return true;
         }
-        else if (id == R.id.action_toDesk)
-        {
-            if (logicController != null)
-                logicController.changeInitIpAddr("34.193.23.122");
-            return true;
-        }
         else if (id == R.id.action_toLap)
         {
             if (logicController != null)
@@ -776,6 +772,14 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, IpEditActivity.class);
             intent.putExtra("ip", logicController.tcpIpAddr);
             startActivityForResult(intent, 1);
+        }
+        else if (id == R.id.action_changeWakeupPhrase)
+        {
+            Intent intent = new Intent(this, ChangeWakeupActivity.class);
+            intent.putExtra("current_wakeup", wakeupPhrase);
+            intent.putExtra("current_sensitivity", wakeupSensitivity);
+            intent.putExtra("current_isListening", isKeywordWakeupOn);
+            startActivityForResult(intent, 2);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -789,6 +793,36 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK)
             {
                 logicController.changeInitIpAddr(data.getStringExtra("ip"));
+            }
+            if (resultCode == RESULT_CANCELED)
+            {
+                //Write your code if there's no result
+            }
+        }
+        else if (requestCode == 2)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                String newWakeup = data.getStringExtra("wakeupWord");
+                boolean changeInWakeupPhrase = newWakeup != null && !newWakeup.isEmpty() && !newWakeup.equals(wakeupPhrase);
+                if (changeInWakeupPhrase)
+                {
+                    updateWakeupPhrase(newWakeup);
+                }
+                int newSensitivity = data.getIntExtra("sensitivity", Consts.defaultWakeupSensitivity);
+                boolean changeInWakeupSensitivity = newSensitivity != wakeupSensitivity;
+                if (changeInWakeupSensitivity)
+                {
+                    updateWakeupSensitivity(newSensitivity);
+                }
+                if (changeInWakeupPhrase || changeInWakeupSensitivity)
+                {
+                    //change current listener!
+                    getInMindCommandListener();
+                }
+                //start listening again.
+                isKeywordWakeupOn = data.getBooleanExtra("shouldListen", false);
+                dealWithUpdateInWakeupKeyword();
             }
             if (resultCode == RESULT_CANCELED)
             {
@@ -817,7 +851,7 @@ public class MainActivity extends AppCompatActivity
         logicController.ConnectToServer("yes", false);
     }
 
-    private final OnClickListener stopListener = new OnClickListener()
+    private final OnClickListener stopButtonClick = new OnClickListener()
     {
 
         @Override
@@ -828,6 +862,8 @@ public class MainActivity extends AppCompatActivity
             logicController.stopStreaming();
             ttsCont.stop();
             alarmTimer.stopAlarm();
+            if (isKeywordWakeupOn)
+                inmindCommandListener.listenForInmindCommand(); //safe, if already listening, won't listen again.
             //inmindCommandListener.stopListening();
         }
 
@@ -846,9 +882,39 @@ public class MainActivity extends AppCompatActivity
 
     };
 
+
+    String wakeupPhrase;
+    int wakeupSensitivity;
     boolean isKeywordWakeupOn;
 
-    private void updateIsKeywordWakeupOn()
+    void getWakeupPhrase()
+    {
+        wakeupPhrase = getPreferences(MODE_PRIVATE).getString("wakeupPhrase", Consts.defaultWakeupWord);
+    }
+
+    void getWakeupSensitivity()
+    {
+        wakeupSensitivity = getPreferences(MODE_PRIVATE).getInt("wakeupSensitivity", Consts.defaultWakeupSensitivity);
+    }
+
+    void updateWakeupPhrase(String newWakeupPhrase)
+    {
+        wakeupPhrase = newWakeupPhrase;
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        editor.putString("wakeupPhrase", wakeupPhrase);
+        editor.apply();
+    }
+
+    void updateWakeupSensitivity(int newWakeupSensitivity)
+    {
+        wakeupSensitivity = newWakeupSensitivity;
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        editor.putInt("wakeupSensitivity", wakeupSensitivity);
+        editor.apply();
+    }
+
+
+    private void getIsKeywordWakeupOn()
     {
         boolean defaultWakeup = false;
         SharedPreferences prefs = getPreferences(MODE_PRIVATE);
@@ -869,6 +935,11 @@ public class MainActivity extends AppCompatActivity
     public void toggleListenKeyword(View view)
     {
         isKeywordWakeupOn = !isKeywordWakeupOn;
+        dealWithUpdateInWakeupKeyword();
+    }
+
+    private void dealWithUpdateInWakeupKeyword()
+    {
         if (isKeywordWakeupOn)
         {
             inmindCommandListener.listenForInmindCommand();

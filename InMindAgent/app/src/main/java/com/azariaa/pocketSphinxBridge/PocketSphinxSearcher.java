@@ -88,17 +88,19 @@ public class PocketSphinxSearcher {
     //private HashMap<String, Integer> captions;
     SphinxRes sphinxRes;
     String keyPhrase;
+    int sensitivity;
     Context context;
 
     final Object initializedLock = new Object();
     boolean wasInitialized = false;
     boolean startedInitializing = false;
 
-    public PocketSphinxSearcher(Context contextvar, String keyPhrase, SphinxRes sphinxRes)
+    public PocketSphinxSearcher(Context contextvar, String keyPhrase, int wakeUpSensitivity, SphinxRes sphinxRes)
     {
     	this.sphinxRes = sphinxRes;
     	this.keyPhrase = keyPhrase;
     	this.context = contextvar;
+        this.sensitivity = wakeUpSensitivity;
     }
     
     public void startListeningForKeyword()
@@ -170,7 +172,7 @@ public class PocketSphinxSearcher {
             recognizer = defaultSetup()
                     .setAcousticModel(new File(modelsDir, "hmm/en-us-semi"))
                     .setDictionary(new File(modelsDir, "dict/cmu07a.dic"))
-                    .setFloat("-kws_threshold", 1e-45)//1e-320)//.setKeywordThreshold(1e-45f)//(1e-45f)//(1e-20f)
+                    .setFloat("-kws_threshold", Math.pow(10, sensitivity*-1))//1e-10//1e-320)//.setKeywordThreshold(1e-45f)//(1e-45f)//(1e-20f)
                     //.setRawLogDir(assetsDir) //takes a lot of space on phone (and also time?)
                     .getRecognizer();
         }
