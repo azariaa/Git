@@ -66,13 +66,13 @@ public class LogicController
         sendMessageUsingTcp(uniqueId + Consts.commandChar +  getCurrentTimeStr() + Consts.commandChar + (isCommand ? Consts.sendingCommand : Consts.sendingText) + Consts.commandChar + sendThisText);
     }
 
-    public void ConnectToServer()
+    public void ConnectToServer(String usedWakeupPhrase)
     {
         //if is currently streaming, ignore request.
         if (tcpClient != null && audioStreamer != null && audioStreamer.isStreaming())
             return;
         //closeConnection(); //not closing, since sometimes remains open.
-        sendMessageUsingTcp(uniqueId + Consts.commandChar +  getCurrentTimeStr() + Consts.commandChar + Consts.requestSendAudio + Consts.commandChar);
+        sendMessageUsingTcp(uniqueId + Consts.commandChar +  getCurrentTimeStr() + Consts.commandChar + Consts.requestSendAudio + Consts.commandChar + "usedWakeupPhrase: " + usedWakeupPhrase);
     }
 
     private void sendMessageUsingTcp(String messageToSend)
@@ -252,7 +252,7 @@ public class LogicController
         if (needToReconnect)
         {
             needToReconnect = false;
-            ConnectToServer();
+            ConnectToServer("reconnect");
         }
         return isReconnecting;
     }

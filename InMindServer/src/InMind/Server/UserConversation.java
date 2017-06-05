@@ -1,5 +1,6 @@
 package InMind.Server;
 
+import InMind.Consts;
 import InMind.Server.asr.ASR;
 import InMind.Utils;
 
@@ -41,9 +42,15 @@ public class UserConversation
         String userText = asrRes.text;
         logger.info("userid:" + userId + ", userText" +(asrRes.wasSentAsText ? "(as text)" : "(from speech)")+":" + userText);
 
-
-        List<String> toSend = toInstructable.connectWithInstructable(asrRes, userTime);
-        sendToUser(messageSender, toSend);
+        if (userText.startsWith(Consts.logChangeInSettings)) //no need to do anything, just log this.
+        {
+            logger.info("userid:" + userId + ", just logging: " + userText);
+        }
+        else
+        {
+            List<String> toSend = toInstructable.connectWithInstructable(asrRes, userTime);
+            sendToUser(messageSender, toSend);
+        }
 //        if (dialogFileBase.isEmpty() || fullInfo.containsKey(dontRenewConnectionStr))
 //            return ToDoWithConnection.close;
 //        if (fullInfo.containsKey(dontCloseConnectionStr))

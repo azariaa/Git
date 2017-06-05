@@ -70,7 +70,7 @@ public class InMindLogic
         {
             try
             {
-                System.out.println("InMindLogic" + "Dealing with message:" + message);
+                System.out.println("InMindLogic" + " Dealing with message:" + message);
                 Pattern p = Pattern.compile(Consts.clientMessagePattern);
                 Matcher m = p.matcher(message);
                 boolean found = m.find();
@@ -93,6 +93,9 @@ public class InMindLogic
 
                     if (m.group(3).equalsIgnoreCase(Consts.requestSendAudio))
                     {
+                        UserConversation userConversation = getOrCreateUserConversation(userId);
+                        userConversation.logger.info(m.group(3) + ": " + m.group(4));
+
                         int portToUse = nextPort();
                         tcpServer.sendMessage(Consts.connectUdp + Consts.commandChar + portToUse);
 
@@ -144,14 +147,7 @@ public class InMindLogic
                 if (echoBackToUser)
                     tcpServer.sendMessage(Consts.userSaid + Consts.commandChar + asrRes.text);
 
-                UserConversation userConversation = null;
-                if (userConversationMap.containsKey(userId))
-                    userConversation = userConversationMap.get(userId);
-                else
-                {
-                    userConversation = new UserConversation(userId);
-                    userConversationMap.put(userId,userConversation);
-                }
+                UserConversation userConversation = getOrCreateUserConversation(userId);
 
                 UserConversation.ToDoWithConnection toDoWithConnection = userConversation.dealWithMessage(asrRes, new MessageSender(), userTime);
 
@@ -182,5 +178,18 @@ public class InMindLogic
             }
         }
 
+    }
+
+    private UserConversation getOrCreateUserConversation(String userId)
+    {
+        UserConversation userConversation = null;
+        if (userConversationMap.containsKey(userId))
+            userConversation = userConversationMap.get(userId);
+        else
+        {
+            userConversation = new UserConversation(userId);
+            userConversationMap.put(userId,userConversation);
+        }
+        return userConversation;
     }
 }

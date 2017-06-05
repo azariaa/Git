@@ -43,6 +43,7 @@ public class Consts
     static public final String requestSendAudio = "RequestSendAudio";
     static public final String sendingText = "SendingText";
     static public final String sendingCommand = "SendingCommand";
+    static public final String logChangeInSettings = "logChangeInSettings";
 
     //from instructable server
     public static final String execCmdPre = "execCmd:";

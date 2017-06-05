@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.azariaa.lia.liaClient.MainActivity" >
 
-    <item
+    <!--<item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:title="@string/action_settings"/>
+        android:title="@string/action_settings"/>-->
     <item android:id="@+id/action_changeWakeupPhrase" android:title="Wakeup Phrase Settings"></item>
-    <item android:id="@+id/action_toLap" android:title="changeToLapIp"></item>
+    <!--<item android:id="@+id/action_toLap" android:title="changeToLapIp"></item>-->
     <item android:id="@+id/action_changeIp" android:title="changeIp"></item>
 
 </menu>

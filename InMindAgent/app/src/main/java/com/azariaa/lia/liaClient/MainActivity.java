@@ -519,7 +519,7 @@ public class MainActivity extends AppCompatActivity
             public void commandDetected()
             {
                 bringToForegroundAndTurnOnScreen();
-                connectAudioToServer();
+                connectAudioToServer("wakeupPhraseDetected");
             }
         }, this, wakeupPhrase, wakeupSensitivity);
     }
@@ -671,10 +671,10 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    void connectAudioToServer()
+    void connectAudioToServer(String usedWakeupPhrase)
     {
         //inmindCommandListener.stopListening();
-        logicController.ConnectToServer();
+        logicController.ConnectToServer(usedWakeupPhrase);
     }
 
 
@@ -761,12 +761,12 @@ public class MainActivity extends AppCompatActivity
         {
             return true;
         }
-        else if (id == R.id.action_toLap)
-        {
-            if (logicController != null)
-                logicController.changeInitIpAddr("192.168.43.18");
-            return true;
-        }
+//        else if (id == R.id.action_toLap)
+//        {
+//            if (logicController != null)
+//                logicController.changeInitIpAddr("192.168.43.18");
+//            return true;
+//        }
         else if (id == R.id.action_changeIp)
         {
             Intent intent = new Intent(this, IpEditActivity.class);
@@ -803,12 +803,14 @@ public class MainActivity extends AppCompatActivity
         {
             if (resultCode == RESULT_OK)
             {
+                String oldWakeup = wakeupPhrase;
                 String newWakeup = data.getStringExtra("wakeupWord");
                 boolean changeInWakeupPhrase = newWakeup != null && !newWakeup.isEmpty() && !newWakeup.equals(wakeupPhrase);
                 if (changeInWakeupPhrase)
                 {
                     updateWakeupPhrase(newWakeup);
                 }
+                int oldSensitivity = wakeupSensitivity;
                 int newSensitivity = data.getIntExtra("sensitivity", Consts.defaultWakeupSensitivity);
                 boolean changeInWakeupSensitivity = newSensitivity != wakeupSensitivity;
                 if (changeInWakeupSensitivity)
@@ -819,6 +821,11 @@ public class MainActivity extends AppCompatActivity
                 {
                     //change current listener!
                     getInMindCommandListener();
+                    //notify server (currently just for logging)
+                    String toServer = Consts.logChangeInSettings + ": change in wakeup phrase." + " old wakeup: " + oldWakeup + ". new wakeup: " +
+                            newWakeup + ". old sensitivity: " + oldSensitivity + ". new sensitivity:" + newSensitivity +
+                            ". isKeywordWakeupOn: " + isKeywordWakeupOn;
+                    logicController.ConnectToServer(toServer, true);
                 }
                 //start listening again.
                 isKeywordWakeupOn = data.getBooleanExtra("shouldListen", false);
@@ -877,7 +884,7 @@ public class MainActivity extends AppCompatActivity
         {
             Log.d("Main", "Start Clicked");
             // audioStreamer.startStreaming();
-            connectAudioToServer();
+            connectAudioToServer("buttonClicked");
         }
 
     };
@@ -936,6 +943,8 @@ public class MainActivity extends AppCompatActivity
     {
         isKeywordWakeupOn = !isKeywordWakeupOn;
         dealWithUpdateInWakeupKeyword();
+        String toServer = Consts.logChangeInSettings + ":" + " isKeywordWakeupOn: " + isKeywordWakeupOn;
+        logicController.ConnectToServer(toServer, true);
     }
 
     private void dealWithUpdateInWakeupKeyword()
