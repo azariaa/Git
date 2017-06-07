@@ -42,7 +42,7 @@ public class ASR
     public void beginTransmission() throws IOException
     {
         String USER_AGENT = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2",
-                url = "https://www.google.com/speech-api/v2/recognize?output=json&lang=en-us&key=AIzaSyChZTv4KdGD56Uuh7uMBXy-YEdaAsSBmpw&client=chromium&maxresults=6&pfilter=2";
+                url = "https://www.google.com/speech-api/v2/recognize?output=json&lang=en-us&key="+Credentials.getKey()+"&client=chromium&maxresults=6&pfilter=2";
 
         URL obj = new URL(url);
         con = (HttpsURLConnection) obj.openConnection();
