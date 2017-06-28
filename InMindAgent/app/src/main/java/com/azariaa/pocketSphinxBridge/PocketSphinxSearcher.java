@@ -95,10 +95,14 @@ public class PocketSphinxSearcher {
     boolean wasInitialized = false;
     boolean startedInitializing = false;
 
+    /**
+     *
+     * @param keyPhrase will be lowered to lowercase.
+     */
     public PocketSphinxSearcher(Context contextvar, String keyPhrase, int wakeUpSensitivity, SphinxRes sphinxRes)
     {
     	this.sphinxRes = sphinxRes;
-    	this.keyPhrase = keyPhrase;
+    	this.keyPhrase = keyPhrase.toLowerCase();
     	this.context = contextvar;
         this.sensitivity = wakeUpSensitivity;
     }
