@@ -45,6 +45,6 @@ public class Consts
     static public final String sendingText = "SendingText";
     static public final String sendingCommand = "SendingCommand";
 
-    static public final String defaultWakeupWord = "exclamation";//"in mind agent";
-    static public final int defaultWakeupSensitivity = 10;
+    static public final String defaultWakeupWord = "jessica";//"exclamation";//"in mind agent";
+    static public final int defaultWakeupSensitivity = 12;
 }

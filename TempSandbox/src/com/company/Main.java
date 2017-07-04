@@ -54,8 +54,14 @@ public class Main {
     public static void main(String[] args) throws Exception
     {
 
-        for (int i = 0; i < 1000; i++)
-            System.out.println(NameGenerator.generateNewName());
+        String agentNameKeyword = "jessica";
+        String bestResult = "is this JesSica or is it djessica?";
+        String regex = "\\s*\\b"+agentNameKeyword+"\\b\\s*";
+        String text = bestResult.replaceAll("(?i)"+regex, " ");
+        System.out.println(text);
+
+        //for (int i = 0; i < 1000; i++)
+            //System.out.println(NameGenerator.generateNewName());
 
 //        String email = "inmindenc@gmail.com";
 //        //Pattern pattern = Pattern.compile("(^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$)", Pattern.CASE_INSENSITIVE);

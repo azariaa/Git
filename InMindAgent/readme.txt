@@ -2,7 +2,7 @@ The Learning by Instruction Agent (LIA) client is an agent that can learn new ta
 
 It is recommended to install the LIA client on a stationary phone that is connected constantly to the outlet and has both a microphone and speaker connected to it with a splitter (e.g. https://www.amazon.com/gp/product/B01MPZGF6N
 https://www.amazon.com/gp/product/B01MPZGF6N
-https://www.amazon.com/gp/product/B01HEYIPGK). This way LIA can be called using its wakeup keyword: EXCLAMATION, form a distance. Note that allowing the use of a wakeup keyword (EXCLAMATION) locks the microphone, so no other app can use the microphone (e.g. video recorder, Google Now, Skype or WhatsAPP call etc.), there is a button in LIA's client GUI to disable the wakeup keyword and release the microphone (by default LIA does NOT listen for a keyword).
+https://www.amazon.com/gp/product/B01HEYIPGK). This way LIA can be called using its wakeup keyword: JESSICA, form a distance. Note that allowing the use of a wakeup keyword (JESSICA) locks the microphone, so no other app can use the microphone (e.g. video recorder, Google Now, Skype or WhatsAPP call etc.), there is a button in LIA's client GUI to disable the wakeup keyword and release the microphone (by default LIA does NOT listen for a keyword).
 
 For smoothly playing YouTube songs/videos (by saying for example "play strawberry fields"), it is recommended to install Cygery AdSkip Youtube ads [from: https://forum.xda-developers.com/android/apps-games/app-cygery-adskip-youtube-xda-exclusive-t3361271 (or video: https://www.youtube.com/watch?v=_nXgNCD3BO8)
 

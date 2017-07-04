@@ -143,7 +143,7 @@ public class ASR
                     String bestResult = result.getString("transcript");
                     //remove agentName
                     String regex = "\\s*\\b"+Consts.agentNameKeyword+"\\b\\s*";
-                    res.text = bestResult.replaceAll(regex, "");
+                    res.text = bestResult.replaceAll("(?i)"+regex, " ");
                     if (result.has("confidence"))
                         res.confidence = result.getDouble("confidence");
                 }

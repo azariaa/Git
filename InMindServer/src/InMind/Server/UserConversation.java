@@ -42,6 +42,8 @@ public class UserConversation
         String userText = asrRes.text;
         logger.info("userid:" + userId + ", userText" +(asrRes.wasSentAsText ? "(as text)" : "(from speech)")+":" + userText);
 
+        ToDoWithConnection toDoWithConnection = ToDoWithConnection.close;
+
         if (userText.startsWith(Consts.logChangeInSettings)) //no need to do anything, just log this.
         {
             logger.info("userid:" + userId + ", just logging: " + userText);
@@ -50,12 +52,15 @@ public class UserConversation
         {
             List<String> toSend = toInstructable.connectWithInstructable(asrRes, userTime);
             sendToUser(messageSender, toSend);
+            //if it was sent as speech and ends with a '?' we want to automatically wait for reconnect.
+            if (!asrRes.wasSentAsText && toSend.size() > 0 && toSend.get(toSend.size()-1).trim().endsWith("?"))
+                toDoWithConnection = ToDoWithConnection.renew;
         }
 //        if (dialogFileBase.isEmpty() || fullInfo.containsKey(dontRenewConnectionStr))
 //            return ToDoWithConnection.close;
 //        if (fullInfo.containsKey(dontCloseConnectionStr))
 //            return ToDoWithConnection.nothing;
-        return ToDoWithConnection.close;
+        return toDoWithConnection;
     }
 
     private void sendToUser(InMindLogic.MessageReceiver.MessageSender messageSender, List<String> forUser) //, boolean saveMessage)

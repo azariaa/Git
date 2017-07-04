@@ -32,7 +32,7 @@ public class Consts
     public static final String youTube = "YouTube"; //e.g. YouTube^FD23424+dfs3
     static public final String timerFunctions = "timerFunctions";
 
-    static public final String agentNameKeyword = "exclamation";//agent name is removed from ASR result
+    static public final String agentNameKeyword = "jessica";//"exclamation";//agent name is removed from ASR result
 
     //client requests must start with user Id. e.g., userId^SendingText^text
     static public final String clientMessagePattern = "([-a-zA-Z0-9]+)" //userId

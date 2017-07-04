@@ -13,7 +13,7 @@ public class InteractionManager extends AInteractionManager
     }
 
     final double dMaxUttDuration = 15000;//30000;
-    final double dMinUttDuration = 2300;//1200;//500;//1000;
+    final double dMinUttDuration = 3000;//1700;//1200;//500;//1000;
     //final double dActionThreshold = 300;
     //final double dListenThreshold = 1000;
     final double dStopSpeakingThreshold = 320; //want to usually call Google only once, so increased required silence at end, was: 250;//150;
