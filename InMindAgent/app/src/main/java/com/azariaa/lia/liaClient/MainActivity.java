@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     Log.d("handleMessage", "openning YouTube");
                     final String videoId = msg.obj.toString();
-                    playVideoWithChecking(videoId);
+                    playVideoWithChecking(videoId, msg.arg2==1);
                 }
                 else if (msg.arg1 == 4) //timeFunctions
                 {
@@ -541,36 +541,47 @@ public class MainActivity extends AppCompatActivity
     }
 
     String lastVideoPlayed = "";
-    private void playVideoWithChecking(final String videoId)
+    private void playVideoWithChecking(final String videoId, final boolean isPlaylist)
     {
         if (lastVideoPlayed.equals(videoId))
         {
-            playVideo("abc"); //first play something else, so can play same video again
+            playVideo("abc", false); //first play something else, so can play same video again
             new Handler().postDelayed(new Runnable() //then wait a little bit before playing the video
             {
                 @Override
                 public void run()
                 {
-                    playVideo(videoId);
+                    playVideo(videoId, isPlaylist);
                 }
             }, 2500);
         }
         else
         {
             lastVideoPlayed = videoId;
-            playVideo(videoId);
+            playVideo(videoId, isPlaylist);
         }
     }
 
-    private void playVideo(String videoId)
+    private void playVideo(String videoId, boolean isPlaylist)
     {
         Log.d("handleMessage", "videoId:" + videoId);
         //YouTube requires screen to be on to work.
         //startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/" + videoId)));
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
+        Intent intent;
+        if (!isPlaylist)
+        {
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
+            intent.putExtra("VIDEO_ID", videoId);
+        }
+        else
+        {
+            Uri uri = Uri.parse("https://www.youtube.com/watch?list=" + videoId);
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(uri);
+            intent.setPackage("com.google.android.youtube");
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("VIDEO_ID", videoId);
         startActivity(intent);
         turnOnScreen("YouTube", videoId);
     }

@@ -1,4 +1,4 @@
-The Learning by Instruction Agent (LIA) client is an agent that can learn new tasks. Written in Android Studio.
+The Learning by Instruction Agent (LIA) client is an agent that can learn new tasks. Written in Android Studio. See https://youtu.be/nSZYGjFzzS0 for a demonstration of some of LIA's features.
 
 It is recommended to install the LIA client on a stationary phone that is connected constantly to the outlet and has both a microphone and speaker connected to it with a splitter (e.g. https://www.amazon.com/gp/product/B01MPZGF6N
 https://www.amazon.com/gp/product/B01MPZGF6N
@@ -8,9 +8,10 @@ For smoothly playing YouTube songs/videos (by saying for example "play strawberr
 
 In order to teach by demonstration, one should also install Sugilite:https://github.com/tobyli/Sugilite
 
+If LIA responds with a question (i.e. a sentence ending with a question mark), it will listen for user response (i.e. no need to say wake-up phrase).
 
 List of features:
-- learning by natural language / demonstration (either say something LIA doesn't know how to execute and then say yes when she asks if you would like to teach her, or explicitly say that you want to teach her a new command).
+- learning by natural language / demonstration (either say something LIA doesn't know how to execute and then say yes when she asks if you would like to teach her, or explicitly say that you want to teach her a new command). New commands may composed of several commands.
 - defining new concepts (e.g. "define concept contact"), creating new fields (e.g. "a contact has an email") creating new instances (e.g. "John is a contact", "John's email is john@john2.com"), retrieving that information (e.g. "what is John's email").
 - forget all learned
 - undo

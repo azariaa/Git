@@ -210,7 +210,20 @@ public class LogicController
                 Log.d("ServerConnector", "Play youtube message:" + m.group(2));
                 Message msgLaunch = new Message();
                 msgLaunch.arg1 = 3;
-                msgLaunch.obj = m.group(2).trim();
+                String fullArg = m.group(2).trim();
+                String videoOrPlayListId;
+                boolean isPlaylist = false;
+                if (fullArg.startsWith(Consts.playListPre))
+                {
+                    videoOrPlayListId = fullArg.substring(Consts.playListPre.length());
+                    isPlaylist = true;
+                }
+                else
+                {
+                    videoOrPlayListId = fullArg.substring(Consts.videoPre.length());
+                }
+                msgLaunch.obj = videoOrPlayListId;
+                msgLaunch.arg2 = isPlaylist ? 1 : 0;
                 launchHandler.sendMessage(msgLaunch);
             }
             else if (m.group(1).equalsIgnoreCase(Consts.timerFunctions))

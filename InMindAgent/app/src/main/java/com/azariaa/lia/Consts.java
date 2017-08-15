@@ -24,7 +24,9 @@ public class Consts
     static public final String sugiliteStartRecording = "startrec"; //e.g. Sugilite^startrec^script name
     static public final String sugiliteRun = "run"; //e.g. Sugilite^run^script name
     static public final String sugiliteExecJson = "sugExecJson"; //e.g.Sugilite^execJson^{{"variables":{},"nextBlock":{"actionType":"CLICK","childTexts":["Contacts"]}}
-    public static final String youTube = "YouTube"; //e.g. YouTube^FD23424+dfs3
+    public static final String youTube = "YouTube"; //e.g. YouTube^video:FD23424+dfs3
+    static public final String videoPre = "video:";
+    static public final String playListPre = "playList:";
     public static final String timerFunctions = "timerFunctions"; //e.g. timeFunctions^{type:"alarm", time:"2017-05-22 17:34:20", say:"get off the computer"}
 //    public static final String timeAlarm = "alarm"; //e.g. timeFunctions^alarm^
 //    public static final String timeTimer = "timer"; //e.g. timeFunctions^timer^1:23:00
