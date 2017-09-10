@@ -173,11 +173,13 @@ public class LogicController
                 if (udpIpPort > 0)
                     openAudioStream();
             }
-            else if (m.group(1).equalsIgnoreCase(Consts.sayCommand))
+            else if (m.group(1).equalsIgnoreCase(Consts.sayCommand) || m.group(1).equalsIgnoreCase(Consts.sayQuietlyCommand))
             {
                 Log.d("ServerConnector", "saying:" + m.group(2));
                 Message msgTalk = new Message();
                 msgTalk.arg1 = 3; //say aloud and toast
+                if (m.group(1).equalsIgnoreCase(Consts.sayQuietlyCommand))
+                    msgTalk.arg1 = 1; //don't say aloud, just text and toast.
                 msgTalk.obj = m.group(2).trim();
                 talkHandler.sendMessage(msgTalk);
             }

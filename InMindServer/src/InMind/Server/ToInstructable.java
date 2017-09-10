@@ -46,6 +46,7 @@ public class ToInstructable
 
     public List<String> connectWithInstructable(ASR.AsrRes userText, Date userTime)
     {
+        boolean communicationByText = userText.wasSentAsText;
         try
         {
             if (obtainingUsernamePassword)
@@ -92,7 +93,7 @@ public class ToInstructable
                         exeCommand += Consts.sugiliteExecJson + Consts.commandChar + jsonToExec;
                         commands.add(exeCommand);
                         if (res.length == 1) //only if this is the only command being executed we say "Executing". This is to enable the user to define what should be said (e.g. say ordering cappuccino)
-                            commands.add(sayWithCom + "Executing."); //cannot add script name, since there may be different scripts combined, and there also may be no script name
+                            addSay(commands,sayWithCom + "Executing.", communicationByText); //cannot add script name, since there may be different scripts combined, and there also may be no script name
                     }
                     else if (sentence.startsWith(Consts.demonstrateStr))
                     {
@@ -100,7 +101,7 @@ public class ToInstructable
                         String exeCommand = Consts.sugilite + Consts.commandChar;
                         exeCommand += Consts.sugiliteStartRecording + Consts.commandChar + scriptName;
                         commands.add(exeCommand);
-                        commands.add(sayWithCom + "Show me how to " + scriptName + "! Once you are done click on the duck and select end recording.");
+                        addSay(commands, "Show me how to " + scriptName + "! Once you are done click on the duck and select end recording.", communicationByText);
                     }
                     else if (sentence.startsWith(Consts.playYouTubeStr))
                     {
@@ -113,20 +114,31 @@ public class ToInstructable
                     else if (sentence.startsWith(Consts.timerFunctions + Consts.instructableDelimiterColon))
                     {
                         String json = sentence.substring(Consts.timerFunctions.length() + 1).trim();
-                        commands.add(Consts.timerFunctions + Consts.commandChar + json);
+                        addSay(commands,Consts.timerFunctions + Consts.commandChar + json, communicationByText);
                     }
                 }
                 else
                 {
-                    commands.add(sayWithCom + sentence);
+                    addSay(commands, sentence, communicationByText);
                 }
             }
             return commands;
         } catch (Exception ex)
         {
             ex.printStackTrace();
-            return Collections.singletonList(sayWithCom + "Could not connect to instructable server.");
+            List<String> commands = new LinkedList<>();
+            addSay(commands, "Could not connect to instructable server.", communicationByText);
+            return commands;
         }
+    }
+
+    private static void addSay(List<String> commands, String toSay, boolean communicationByText)
+    {
+        String sentence = Consts.sayCommand;
+        if (communicationByText)
+            sentence += Consts.sayQuietlyCommand;
+        sentence += Consts.commandChar + toSay;
+        commands.add(sentence);
     }
 
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
@@ -134,10 +146,13 @@ public class ToInstructable
 
     private List<String> dealWithEmailAndPassword(boolean gotNewRequest, ASR.AsrRes userText, Date userTime)
     {
+        boolean communicationByText = userText.wasSentAsText;
         if (gotNewRequest)
         {
             obtainingUsernamePassword = true;
-            return Collections.singletonList(sayWithCom + "This operation requires obtaining your email and password. Please type-in your full email address (or just ignore). Your email and password will be stored on a server. You may wish to provide a new email account and forward your emails to this account.");
+            List<String> commands = new LinkedList<>();
+            addSay(commands, "This operation requires obtaining your email and password. Please type-in your full email address (or just ignore). Your email and password will be stored on a server. You may wish to provide a new email account and forward your emails to this account.", communicationByText);
+            return commands;
         }
         else if (userEmail.isPresent())
         {
@@ -151,7 +166,9 @@ public class ToInstructable
         if (matcher.find())
         {
             userEmail = Optional.of(userText.text);
-            return Collections.singletonList(sayWithCom + "Thank you. Now please type-in your password.");
+            List<String> commands = new LinkedList<>();
+            addSay(commands, "Thank you. Now please type-in your password.", true);
+            return commands;
         }
         else
         {
@@ -181,11 +198,15 @@ public class ToInstructable
                 String response = dialogUtils.callServer(url, parameters, false);
                 userEmail = Optional.empty(); //delete them for security reasons.
                 userPassword = Optional.empty(); //delete them for security reasons.
-                return Collections.singletonList(sayWithCom+response);
+                List<String> commands = new LinkedList<>();
+                addSay(commands, response, true);
+                return commands;
             } catch (Exception ex)
             {
                 ex.printStackTrace();
-                return Collections.singletonList(sayWithCom+"Could not connect to instructable server.");
+                List<String> commands = new LinkedList<>();
+                addSay(commands, "Could not connect to instructable server.", true);
+                return commands;
             }
         }
 

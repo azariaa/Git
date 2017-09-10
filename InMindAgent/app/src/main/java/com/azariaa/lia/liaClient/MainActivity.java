@@ -2,6 +2,7 @@ package com.azariaa.lia.liaClient;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.azariaa.lia.liaClient.InMindCommandListener.InmindCommandInterface;
 //import com.yahoo.inmind.comm.generic.control.MessageBroker;
@@ -11,6 +12,7 @@ import com.azariaa.lia.simpleUtils;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -79,10 +81,33 @@ public class MainActivity extends AppCompatActivity
 
     static final String userPrefix = "User: ";
     static final String agentPrefix = "Agent: ";
+    boolean inBackground = false;
+
+    BroadcastReceiver broadcastReceiver = null;
+
+    //create a counter to count the number of instances of this activity
+    public static AtomicInteger activitiesLaunched = new AtomicInteger(0);
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("MainActivity", "app moved to foreground");
+        inBackground = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("MainActivity", "app moved to background");
+        inBackground = true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        //if launching will create more than one instance of this activity, bail out
+        if (activitiesLaunched.incrementAndGet() > 1) { finish(); }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("Main", "onCreate");
@@ -421,7 +446,7 @@ public class MainActivity extends AppCompatActivity
 
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_SCREEN_OFF);
         //intentFilter.addAction(Intent.ACTION_SCREEN_ON);
-        registerReceiver(new BroadcastReceiver()
+        broadcastReceiver = new BroadcastReceiver()
         {
             @Override
             public void onReceive(Context context, Intent intent)
@@ -432,7 +457,8 @@ public class MainActivity extends AppCompatActivity
                     logicController.closeConnection();
                 }
             }
-        }, intentFilter);
+        };
+        registerReceiver(broadcastReceiver, intentFilter);
 
         if (ttsCont == null)
         {
@@ -595,18 +621,25 @@ public class MainActivity extends AppCompatActivity
     private void bringApplicationToFront()
     {
 
-        Log.d("MainActivity", "====Bringging Application to Front====");
+        if (inBackground)
+        {
+            Log.d("MainActivity", "====Bringging Application to Front====");
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-        try
-        {
-            pendingIntent.send();
-        }
-        catch (PendingIntent.CanceledException e)
-        {
-            Log.e("MainActivity", "PendingIntent.CanceledException while Bringging Application to Front");
+//        ActivityManager am = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
+//        // The first in the list of RunningTasks is always the foreground task.
+//        ActivityManager.RunningTaskInfo foregroundTaskInfo = am.getRunningTasks(1).get(0);
+
+            Intent notificationIntent = new Intent(this, MainActivity.class);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+            try
+            {
+                pendingIntent.send();
+            }
+            catch (PendingIntent.CanceledException e)
+            {
+                Log.e("MainActivity", "PendingIntent.CanceledException while Bringging Application to Front");
+            }
         }
     }
 
@@ -991,10 +1024,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDestroy()
     {
-        logicController.stopStreaming();
+
+        logicController.closeConnection();
         inmindCommandListener.stopListening();
         ttsCont.close();
+        if (broadcastReceiver != null)
+        {
+            unregisterReceiver(broadcastReceiver);
+            broadcastReceiver = null;
+        }
         //MessageBroker.getInstance(this).destroy();
+
+        //remove this activity from the counter
+        activitiesLaunched.getAndDecrement();
         super.onDestroy();
     }
 }

@@ -141,7 +141,7 @@ public class AudioStreamer
                     if (!status)
                     {
                         Message msgTalk = new Message();
-                        msgTalk.arg1 = 1;
+                        msgTalk.arg1 = 1; //don't say aloud
                         msgTalk.obj = "Could not initialize mic. on time!";
                         userNotifierHandler.sendMessage(msgTalk);
                     }
@@ -158,7 +158,7 @@ public class AudioStreamer
 //					Thread.sleep(1600);
 
                         Message msgTalk = new Message();
-                        msgTalk.arg1 = 1;
+                        msgTalk.arg1 = 1; //don't say aloud
                         msgTalk.arg2 = 1; //important toast
                         msgTalk.obj = "Talk!";
                         userNotifierHandler.sendMessage(msgTalk);
