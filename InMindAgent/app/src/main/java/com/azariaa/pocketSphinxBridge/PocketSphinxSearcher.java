@@ -192,6 +192,7 @@ public class PocketSphinxSearcher {
 
     public void stopListening()
     {
-        recognizer.stop();
+        if (recognizer != null)
+            recognizer.stop();
     }
 }

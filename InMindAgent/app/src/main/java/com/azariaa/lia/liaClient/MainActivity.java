@@ -630,7 +630,7 @@ public class MainActivity extends AppCompatActivity
 //        ActivityManager.RunningTaskInfo foregroundTaskInfo = am.getRunningTasks(1).get(0);
 
             Intent notificationIntent = new Intent(this, MainActivity.class);
-            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); //Intent.FLAG_ACTIVITY_NEW_TASK
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
             try
             {
@@ -1024,7 +1024,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onDestroy()
     {
-
+        Log.d("Main", "onDestroy called isFinishing=" + isFinishing());
         logicController.closeConnection();
         inmindCommandListener.stopListening();
         ttsCont.close();
