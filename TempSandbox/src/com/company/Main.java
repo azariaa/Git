@@ -25,9 +25,7 @@ import java.security.spec.KeySpec;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,16 +49,59 @@ public class Main {
 
     static private final String USER_AGENT = "Mozilla/5.0";
 
+    static public class Permute
+    {
+        static void permute(java.util.List<Integer> arr, int k)
+        {
+            for(int i = k; i < arr.size(); i++)
+            {
+                java.util.Collections.swap(arr, i, k);
+                permute(arr, k+1);
+                java.util.Collections.swap(arr, k, i);
+            }
+            if (k == arr.size() -1)
+            {
+                System.out.println(java.util.Arrays.toString(arr.toArray()));
+            }
+        }
+        public static void main(String[] args){
+            Permute.permute(java.util.Arrays.asList(3,4,6,2,1), 0);
+        }
+    }
+
     public static void main(String[] args) throws Exception
     {
-        String[] a = "hello wolrd 7".split(" ");
-        Arrays
 
-        String agentNameKeyword = "jessica";
-        String bestResult = "is this JesSica or is it djessica?";
-        String regex = "\\s*\\b"+agentNameKeyword+"\\b\\s*";
-        String text = bestResult.replaceAll("(?i)"+regex, " ");
-        System.out.println(text);
+        List<Integer> dupPssngr = new LinkedList<>();
+        dupPssngr.add(5);
+        dupPssngr.add(3);
+        dupPssngr.add(7);
+        dupPssngr.add(1);
+        dupPssngr.subList(0,2).clear();
+        System.out.println(dupPssngr.size());
+
+//        Permute.main(args);
+//
+//
+//        Map<Set<Integer>, Double> optSatForCab = new HashMap<>();
+//        Set<Integer> a = new HashSet<>();
+//        a.add(7);
+//        a.add(8);
+//        optSatForCab.put(a, 20.3);
+//        Set<Integer> b = new HashSet<>();
+//        b.add(8);
+//        b.add(7);
+//        if (optSatForCab.containsKey(b))
+//            System.out.println("contains");
+
+
+//        String[] a = "hello wolrd 7".split(" ");
+//
+//        String agentNameKeyword = "jessica";
+//        String bestResult = "is this JesSica or is it djessica?";
+//        String regex = "\\s*\\b"+agentNameKeyword+"\\b\\s*";
+//        String text = bestResult.replaceAll("(?i)"+regex, " ");
+//        System.out.println(text);
 
         //for (int i = 0; i < 1000; i++)
             //System.out.println(NameGenerator.generateNewName());

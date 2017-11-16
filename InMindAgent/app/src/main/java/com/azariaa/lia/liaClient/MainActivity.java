@@ -49,6 +49,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TabHost;
 import android.widget.Toast;
 
 /**
@@ -517,6 +518,29 @@ public class MainActivity extends AppCompatActivity
                 sayToastAndShowWithHandler(toSay);
             }
         }, talkHandler);
+
+        //tabs
+        TabHost tabHost = (TabHost)findViewById(R.id.tabHost1);
+        tabHost.setup();
+
+        TabHost.TabSpec tab1 = tabHost.newTabSpec("First Tab");
+        TabHost.TabSpec tab2 = tabHost.newTabSpec("Second Tab");
+        TabHost.TabSpec tab3 = tabHost.newTabSpec("Third Tab");
+
+        tab1.setIndicator("Talk");
+        tab1.setContent(R.id.tab1);
+
+        tab2.setIndicator("Write");
+        tab2.setContent(R.id.tab2);
+
+        tab3.setIndicator("Teach");
+        tab3.setContent(R.id.tab3);
+
+        tabHost.addTab(tab1);
+        tabHost.addTab(tab2);
+        tabHost.addTab(tab3);
+
+
 
         getWakeupPhrase();
         getWakeupSensitivity();
