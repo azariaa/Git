@@ -81,6 +81,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignBottom="@+id/image_recording"
                         android:layout_alignStart="@+id/button_rec"
+                        android:onClick="onClickStop"
                         android:text="Stop"/>
 
                     <ImageButton
@@ -126,21 +127,223 @@
 
                 </RelativeLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/tab2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                </LinearLayout>
 
-                <LinearLayout
+                    <!-- play ________ [SEND] -->
+                    <TextView
+                        android:id="@+id/playText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textSize="20sp"
+                        android:text="Play"/>
+
+                    <EditText
+                        android:id="@+id/playEditText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@+id/playText"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginTop="-3dp"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:hint="Strawberry Fields Forever"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Send"
+                        android:id="@+id/play_send_button"
+                        android:onClick="sendPlay"
+                        android:layout_alignParentEnd="true"/>
+
+
+
+
+
+                    <!-- set a ___ minute timer [SEND] -->
+                    <TextView
+                        android:id="@+id/setaText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_below="@+id/playText"
+                        android:textSize="20sp"
+                        android:text="Set a"/>
+
+                    <EditText
+                        android:id="@+id/timerEditText"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@+id/setaText"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginTop="-3dp"
+                        android:layout_below="@+id/playText"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:hint="20"/>
+
+                    <TextView
+                        android:id="@+id/minTimerText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/playText"
+                        android:layout_marginTop="5dp"
+                        android:layout_toEndOf="@+id/timerEditText"
+                        android:textSize="20sp"
+                        android:text="minute timer"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/playText"
+                        android:layout_marginTop="2dp"
+                        android:text="Send"
+                        android:id="@+id/timer_send_button"
+                        android:onClick="sendTimer"
+                        android:layout_alignParentEnd="true"/>
+
+
+
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Say Undo"
+                        android:id="@+id/undo_button"
+                        android:layout_below="@+id/timerEditText"
+                        android:layout_marginTop="1dp"
+                        android:onClick="sayUndo"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Stop"
+                        android:id="@+id/button_stop2"
+                        android:layout_below="@+id/timerEditText"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="1dp"
+                        android:onClick="onClickStop"/>
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:id="@+id/tab3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                </LinearLayout>
+                    <!-- Define concept ________ [SEND] -->
+                    <TextView
+                        android:id="@+id/defineText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textSize="20sp"
+                        android:text="Define concept"/>
+
+                    <EditText
+                        android:id="@+id/defineEditText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@+id/defineText"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginTop="-3dp"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:hint="Contact"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Send"
+                        android:id="@+id/define_send_button"
+                        android:onClick="sendDefine"
+                        android:layout_alignParentEnd="true"/>
+
+
+                    <!-- set a ___ minute timer [SEND] -->
+                    <TextView
+                        android:id="@+id/setText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_below="@+id/defineText"
+                        android:textSize="20sp"
+                        android:text="Set"/>
+
+                    <EditText
+                        android:id="@+id/setEditText"
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@+id/setText"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginTop="-3dp"
+                        android:layout_below="@+id/defineText"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:hint="subject"/>
+
+                    <TextView
+                        android:id="@+id/toText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/defineText"
+                        android:layout_marginTop="5dp"
+                        android:layout_toEndOf="@+id/setEditText"
+                        android:textSize="20sp"
+                        android:text="to"/>
+
+                    <EditText
+                        android:id="@+id/toEditText"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@+id/toText"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginTop="-3dp"
+                        android:layout_below="@+id/defineText"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:hint="See you soon"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/defineText"
+                        android:layout_marginTop="2dp"
+                        android:text="Send"
+                        android:id="@+id/set_send_button"
+                        android:onClick="sendSet"
+                        android:layout_alignParentEnd="true"/>
+
+
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Teach new command"
+                        android:id="@+id/teach_button"
+                        android:layout_below="@+id/setEditText"
+                        android:layout_marginTop="1dp"
+                        android:onClick="sayTeach"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Say Yes"
+                        android:id="@+id/say_yes_button2"
+                        android:layout_below="@+id/setEditText"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="1dp"
+                        android:onClick="sayYesAsText"/>
+
+                </RelativeLayout>
             </FrameLayout>
         </LinearLayout>
     </TabHost>

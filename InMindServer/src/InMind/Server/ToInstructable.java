@@ -136,7 +136,7 @@ public class ToInstructable
     {
         String sentence = Consts.sayCommand;
         if (communicationByText)
-            sentence += Consts.sayQuietlyCommand;
+            sentence = Consts.sayQuietlyCommand;
         sentence += Consts.commandChar + toSay;
         commands.add(sentence);
     }

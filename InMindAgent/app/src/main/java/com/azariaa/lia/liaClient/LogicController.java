@@ -179,7 +179,7 @@ public class LogicController
                 Message msgTalk = new Message();
                 msgTalk.arg1 = 3; //say aloud and toast
                 if (m.group(1).equalsIgnoreCase(Consts.sayQuietlyCommand))
-                    msgTalk.arg1 = 1; //don't say aloud, just text and toast.
+                    msgTalk.arg1 = 2; //don't say aloud, just text and toast.
                 msgTalk.obj = m.group(2).trim();
                 talkHandler.sendMessage(msgTalk);
             }

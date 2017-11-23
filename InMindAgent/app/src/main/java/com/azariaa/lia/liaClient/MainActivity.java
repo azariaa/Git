@@ -12,7 +12,6 @@ import com.azariaa.lia.simpleUtils;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,7 +28,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
@@ -481,12 +479,12 @@ public class MainActivity extends AppCompatActivity
         startButton = (ImageButton) findViewById(R.id.button_rec);
         startFromCircle = (ImageButton) findViewById(R.id.image_recording);
         stopKeyword = (ImageButton) findViewById(R.id.listen_keyword);
-        stopButton = (Button) findViewById(R.id.button_stop);
+        //stopButton = (Button) findViewById(R.id.button_stop);
         mainLayout = (RelativeLayout) findViewById(R.id.main_layout);
 
         startButton.setOnClickListener(startListener);
         startFromCircle.setOnClickListener(startListener);
-        stopButton.setOnClickListener(stopButtonClick);
+        //stopButton.setOnClickListener(stopButtonClick);
 
         chatView = (ListView) findViewById(R.id.listView);
         chatAdapter = new ListViewCustomAdapter<String>(this, android.R.layout.simple_list_item_1, chatArray);
@@ -926,24 +924,6 @@ public class MainActivity extends AppCompatActivity
         logicController.ConnectToServer("yes", false);
     }
 
-    private final OnClickListener stopButtonClick = new OnClickListener()
-    {
-
-        @Override
-        public void onClick(View arg0)
-        {
-            Log.d("Main", "Stop Clicked");
-            // audioStreamer.stopStreaming();
-            logicController.stopStreaming();
-            ttsCont.stop();
-            alarmTimer.stopAlarm();
-            if (isKeywordWakeupOn)
-                inmindCommandListener.listenForInmindCommand(); //safe, if already listening, won't listen again.
-            //inmindCommandListener.stopListening();
-        }
-
-    };
-
     private final OnClickListener startListener = new OnClickListener()
     {
 
@@ -1007,6 +987,18 @@ public class MainActivity extends AppCompatActivity
         editor.apply();
     }
 
+    public void onClickStop(View arg0)
+    {
+        Log.d("Main", "Stop Clicked");
+        // audioStreamer.stopStreaming();
+        logicController.stopStreaming();
+        ttsCont.stop();
+        alarmTimer.stopAlarm();
+        if (isKeywordWakeupOn)
+            inmindCommandListener.listenForInmindCommand(); //safe, if already listening, won't listen again.
+        //inmindCommandListener.stopListening();
+    }
+
     public void toggleListenKeyword(View view)
     {
         isKeywordWakeupOn = !isKeywordWakeupOn;
@@ -1062,5 +1054,54 @@ public class MainActivity extends AppCompatActivity
         //remove this activity from the counter
         activitiesLaunched.getAndDecrement();
         super.onDestroy();
+    }
+
+    public void sayUndo(View view)
+    {
+        sayAsText("undo");
+    }
+
+    public void sendPlay(View view)
+    {
+        String toPlay = ((EditText) findViewById(R.id.playEditText)).getText().toString();
+        if (!toPlay.isEmpty())
+            sayAsText("play " + toPlay);
+    }
+
+    public void sendTimer(View view)
+    {
+        String timerTime = ((EditText) findViewById(R.id.timerEditText)).getText().toString();
+        if (!timerTime.isEmpty())
+            sayAsText("set a " + timerTime + " minute timer");
+    }
+
+    private void sayAsText(String toSay)
+    {
+        logicController.ConnectToServer(toSay, false);
+    }
+
+    public void sendDefine(View view)
+    {
+        String conceptDefine = ((EditText) findViewById(R.id.defineEditText)).getText().toString();
+        if (!conceptDefine.isEmpty())
+            sayAsText("define concept " + conceptDefine);
+    }
+
+    public void sendSet(View view)
+    {
+        String set = ((EditText) findViewById(R.id.setEditText)).getText().toString();
+        String to = ((EditText) findViewById(R.id.toEditText)).getText().toString();
+        if (!set.isEmpty() && !to.isEmpty())
+            sayAsText("set " + set + " to " + to);
+    }
+
+    public void sayYesAsText(View view)
+    {
+        sayAsText("yes");
+    }
+
+    public void sayTeach(View view)
+    {
+        sayAsText("teach new command");
     }
 }
