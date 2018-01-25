@@ -114,7 +114,8 @@ public class ToInstructable
                     else if (sentence.startsWith(Consts.timerFunctions + Consts.instructableDelimiterColon))
                     {
                         String json = sentence.substring(Consts.timerFunctions.length() + 1).trim();
-                        addSay(commands,Consts.timerFunctions + Consts.commandChar + json, communicationByText);
+                        commands.add(Consts.timerFunctions + Consts.commandChar + json);
+                        //addSay(commands,Consts.timerFunctions + Consts.commandChar + json, communicationByText); //not to say
                     }
                 }
                 else
