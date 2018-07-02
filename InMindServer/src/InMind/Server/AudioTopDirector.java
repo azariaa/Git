@@ -192,7 +192,7 @@ public class AudioTopDirector
     {
         interactionManager.start();
         asr = new ASR();
-        filePath = Paths.get(folderPath.toString(), fileStart + (new SimpleDateFormat("ddMMyy-hhmmss.SSS").format(new Date())) + ".raw");
+        filePath = Paths.get(folderPath.toString(), fileStart + (new SimpleDateFormat("ddMMyy-HHmmss.SSS").format(new Date())) + ".raw");
         delIfExists(filePath);
 
         audioReceiver = new AudioReceiver(new AudioReceiver.StreamingAlerts()
