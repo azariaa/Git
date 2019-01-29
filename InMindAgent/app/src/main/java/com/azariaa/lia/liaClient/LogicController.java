@@ -29,7 +29,7 @@ public class LogicController
     TCPClient tcpClient;
     AudioStreamer audioStreamer;
 
-    String tcpIpAddr = "34.193.23.122";
+    String tcpIpAddr = "3.16.89.222";
     int tcpIpPort = Consts.serverPort;
     String udpIpAddr;
     int udpIpPort;

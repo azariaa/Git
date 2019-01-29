@@ -8,9 +8,9 @@ android {
     defaultConfig {
         applicationId "com.azariaa.lia.liaClient"
         minSdkVersion 19
-        targetSdkVersion 22
-        versionCode 11
-        versionName "0.11"
+        targetSdkVersion 26
+        versionCode 13
+        versionName "0.13"
     }
 
 

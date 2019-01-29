@@ -132,3 +132,5 @@ InMindAgent/app/app-release.apk
 InMindAgent/build/generated/mockable-android-25.jar
 ASRMicrosoftCpp - Copy/
 InMindServer/src/InMind/Server/asr/Credentials.java
+InMindServer/logging/inmindServer.log.1
+InMindServer/logging/inmindServer.log.1.lck

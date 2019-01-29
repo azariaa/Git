@@ -10,6 +10,7 @@ import com.azariaa.lia.liaClient.InMindCommandListener.InmindCommandInterface;
 import com.azariaa.lia.Consts;
 import com.azariaa.lia.simpleUtils;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -18,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.display.DisplayManager;
@@ -28,6 +30,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
@@ -104,13 +108,21 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        super.onCreate(savedInstanceState);
+        Log.d("Main", "onCreate");
         //if launching will create more than one instance of this activity, bail out
         if (activitiesLaunched.incrementAndGet() > 1) { finish(); }
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Log.d("Main", "onCreate");
+        if (requestPermission())
+        {
+            onCreateCont();
+        }
+    }
+
+    private void onCreateCont()
+    {
         selfPointer = this;
+        setContentView(R.layout.activity_main);
 
         userNotifierHandler = new Handler(new Handler.Callback()
         {
@@ -354,7 +366,7 @@ public class MainActivity extends AppCompatActivity
                 {
                     Log.d("handleMessage", "openning YouTube");
                     final String videoId = msg.obj.toString();
-                    playVideoWithChecking(videoId, msg.arg2==1);
+                    playVideoWithChecking(videoId, msg.arg2 == 1);
                 }
                 else if (msg.arg1 == 4) //timeFunctions
                 {
@@ -518,7 +530,7 @@ public class MainActivity extends AppCompatActivity
         }, talkHandler);
 
         //tabs
-        TabHost tabHost = (TabHost)findViewById(R.id.tabHost1);
+        TabHost tabHost = (TabHost) findViewById(R.id.tabHost1);
         tabHost.setup();
 
         TabHost.TabSpec tab1 = tabHost.newTabSpec("First Tab");
@@ -539,7 +551,6 @@ public class MainActivity extends AppCompatActivity
         tabHost.addTab(tab3);
 
 
-
         getWakeupPhrase();
         getWakeupSensitivity();
         getIsKeywordWakeupOn();
@@ -552,6 +563,40 @@ public class MainActivity extends AppCompatActivity
 
         // attach a Message. set msg.arg to 1 and msg.obj to string for toast.
         Log.d("Main", "onCreate-End");
+    }
+
+    private static String[] permissionsRequired = {
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.RECORD_AUDIO
+    };
+
+    @Override
+    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults)
+    {
+        for (int res : grantResults)
+        {
+            Log.d("mainActivity", "grantResults: " + res);
+            if (res != 0) //0 is positive (granted), -1 is negative (not granted)
+            {
+                requestPermission();
+            }
+        }
+        onCreateCont();
+    }
+
+    private boolean requestPermission()
+    {
+        for (String permission : permissionsRequired)
+        {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED)
+            {
+                Log.d("mainActivity", "requestingPermissions: " + permission);
+                ActivityCompat.requestPermissions(this, permissionsRequired, 0);
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
